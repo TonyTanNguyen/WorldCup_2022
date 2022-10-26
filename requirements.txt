@@ -1,6 +1,5 @@
 numpy
 pandas
 matplotlib
-random
 pickle
 networkx
