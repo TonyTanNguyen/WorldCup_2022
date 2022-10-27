@@ -385,10 +385,10 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
-# img_link = 'https://static-images.vnncdn.net/files/publish/2022/6/14/world-cup-2022-195.jpg'
+img_link = 'https://i.ibb.co/W2bLYvs/Artboard-4.png'
 
 
-# st.image(img_link)
+st.image(img_link)
 
 
 model_selection = st.radio('Please select algorithm',['Logistic Regrestion','Random Forest','SVC'])
