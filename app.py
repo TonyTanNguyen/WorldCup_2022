@@ -78,7 +78,8 @@ def predict_func(home_team,away_team):
 def main():
     currentgroup = ''
     group_stage_result = {}
-    st.markdown('\n##### ***************** GROUP STAGE PREDICTING *****************')
+#     st.markdown('\n##### ***************** GROUP STAGE PREDICTING *****************')
+    st.markdown("<h2 style='text-align: center;>***************** GROUP STAGE PREDICTING *****************</h2>",unsafe_allow_html=True)
     for index, row in wc_22_matches_groupstage.iterrows():
         newgroup = row['Group']
         if newgroup != currentgroup:
@@ -102,6 +103,7 @@ def main():
     round_of_16_pairs = []
     node = []
     st.markdown("\n\n\n##### ======= SCORE AFTER GROUP STAGE =======")
+    
     for gr in group_stage_result_df['Group'].unique():
         current_group = group_stage_result_df[group_stage_result_df['Group']==gr]
         round_of_16_pairs.append([current_group['Country'][:2].values])
@@ -158,7 +160,9 @@ def main():
     st.table(round_of_16_matches_df)
 
     quarter_final_df = pd.DataFrame(quater_final_list,columns=['Team 1','Team 2'])
-    st.markdown('\n#### ========== QUATER-FINALS ==========')
+    
+#     st.markdown('\n#### ========== QUATER-FINALS ==========')
+    st.markdown("<h2 style='text-align: center;>========== QUATER-FINALS =========='/h2>",unsafe_allow_html=True)
     st.table(quarter_final_df.reset_index(drop=True))
 
 
@@ -186,7 +190,9 @@ def main():
     st.markdown("""---""")
     #Predict Semi-Finals
     semi_final_df = pd.DataFrame(semi_final_list,columns=['Team 1','Team 2'])
-    st.markdown('\n#### ========== SEMI-FINALS ==========')
+    
+#     st.markdown('\n#### ========== SEMI-FINALS ==========')
+    st.markdown("<h2 style='text-align: center;>========== SEMI-FINALS =========='/h2>",unsafe_allow_html=True)
     st.table(semi_final_df)
 
     grand_final_list = []
@@ -213,7 +219,9 @@ def main():
     st.markdown("""---""")
     #Grand Final
     grand_final_df = pd.DataFrame(grand_final_list,columns=['Team 1','Team 2'])
-    st.markdown('\n#### ========== GRAND-FINALS ==========')
+    
+#     st.markdown('\n#### ========== GRAND-FINALS ==========')
+    st.markdown("<h2 style='text-align: center;>========== GRAND-FINALS =========='/h2>",unsafe_allow_html=True)
     st.table(grand_final_df)
 
     champion = ''
@@ -236,6 +244,7 @@ def main():
     st.table(grand_final_df.reset_index(drop=True))
 
     st.markdown('\n\n\n\n****======= FIFA WOURLD CUP 2022 CHAMPIONS=======****')
+    st.markdown("<h2 style='text-align: center; color:'red'>FIFA WOURLD CUP 2022 CHAMPIONS'/h2>",unsafe_allow_html=True)
     st.markdown(f"## {champion}")
 
 
@@ -363,7 +372,7 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
-img_link = 'https://static-images.vnncdn.net/files/publish/2022/6/14/world-cup-2022-195.jpg'
+# img_link = 'https://static-images.vnncdn.net/files/publish/2022/6/14/world-cup-2022-195.jpg'
 
 
 st.image(img_link)
