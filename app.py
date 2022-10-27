@@ -364,7 +364,16 @@ def main():
 
 # elif slide1 == 'Go Predicting!':
 
+streamlit_style = """
+			<style>
+			@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;700;800;900&display=swap');
 
+			html, body, [class*="css"]  {
+			font-family: 'Roboto', sans-serif;
+			}
+			</style>
+			"""
+st.markdown(streamlit_style, unsafe_allow_html=True)
 
 hide_streamlit_style = """
             <style>
