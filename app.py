@@ -332,7 +332,7 @@ slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
 if slide1 == 'About the model':
     
     st.write('&nbsp;')
-    st.image('https://miro.medium.com/max/1026/1*Km-E-AC5_P0HJlzWFmbyjg.png')
+    st.image('https://i.ibb.co/GpVPmZx/1-Km-E-AC5-P0-HJlz-WFmbyjg.png')
     st.write('&nbsp;')
     st.markdown("#### Introduction")
     st.write('With the 2022 FIFA World Cup incoming: We are curious to know which team will win using Machine Learning?')
