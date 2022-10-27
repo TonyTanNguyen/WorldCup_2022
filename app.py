@@ -66,12 +66,12 @@ def predict_func(home_team,away_team):
     class_result = loaded_model.predict(input_for_predict)[0]
     probality = loaded_model_proba.predict_proba(input_for_predict)[0]
     probality_output = probality[0] if probality[0] > probality[1] else probality[1]
-    probality_output = str(round(probality_output*100,3)) + "%"
+    probality_output_text = str(round(probality_output*100,3)) + '%'
     team_win = home_team if class_result else away_team
     result = [3,0,probality_output] if class_result else [0,3,probality_output]
     
 #     st.markdown(f"Group {group_name}:")
-    st.markdown(f"<b style='color:red'>{home_team}</b> vs. <b style='color:red'>{away_team}</b>: <b style='color:blue'>{team_win}</b> wins with probability <b>{probality_output}</b>",unsafe_allow_html=True)
+    st.markdown(f"<b style='color:red'>{home_team}</b> vs. <b style='color:red'>{away_team}</b>: <b style='color:blue'>{team_win}</b> wins with probability <b>{probality_output_text}</b>",unsafe_allow_html=True)
 #     st.markdown("========================================================\n")
 #     time.sleep(0.1)
     return result
