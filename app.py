@@ -371,7 +371,7 @@ hide_streamlit_style = """
             <style>
             footer {visibility: hidden;}
             body {background-color: #fff;}
-            //#MainMenu {visibility: hidden;}
+            #MainMenu {visibility: hidden;}
             
             </style>
             """
