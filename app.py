@@ -395,8 +395,11 @@ with tab1:
         main()
 
 with tab2:
-    team1 = st.selectbox("Select Team 1",teams)
-    team2 = st.selectbox("Select Team 2",teams)
+    def submit_delete_project():
+        if st.session_state['selected1'] == st.session_state['selected2']:
+            st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
+    team1 = st.selectbox("Select Team 1",st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1)
+    team2 = st.selectbox("Select Team 2",st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2)
     bt_2_team = st.button("Predict!")
     if bt_2_team:
         predict_func(team1,team2)
