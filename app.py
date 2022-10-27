@@ -378,7 +378,7 @@ st.markdown(streamlit_style, unsafe_allow_html=True)
 hide_streamlit_style = """
             <style>
             footer {visibility: hidden;}
-            body {background-color: #fff;}
+            body {background-color: #EAFBFF;}
             #MainMenu {visibility: hidden;}
 	    .block-container.css-12oz5g7.egzxvld2 {background-color: #eee;}
             
