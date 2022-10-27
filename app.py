@@ -79,7 +79,7 @@ def main():
     currentgroup = ''
     group_stage_result = {}
 #     st.markdown('\n##### ***************** GROUP STAGE PREDICTING *****************')
-    st.markdown("<h2 style='text-align: center;>***************** GROUP STAGE PREDICTING *****************</h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;> GROUP STAGE PREDICTING </h2>",unsafe_allow_html=True)
     for index, row in wc_22_matches_groupstage.iterrows():
         newgroup = row['Group']
         if newgroup != currentgroup:
