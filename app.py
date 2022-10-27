@@ -385,9 +385,8 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
-img_link = 'https://i.ibb.co/W2bLYvs/Artboard-4.png'
+img_link = 'https://i.ibb.co/C0bVGMh/Artboard-4.png'
 
-st.markdown("[![bHL1FR.md.png](https://iili.io/bHL1FR.md.png)](https://freeimage.host/i/bHL1FR)")
 st.image(img_link)
 
 
