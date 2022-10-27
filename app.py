@@ -66,6 +66,7 @@ def predict_func(home_team,away_team):
     class_result = loaded_model.predict(input_for_predict)[0]
     probality = loaded_model_proba.predict_proba(input_for_predict)[0]
     probality_output = probality[0] if probality[0] > probality[1] else probality[1]
+    probality_output = str(round(probality_output*100,3)) + "%"
     team_win = home_team if class_result else away_team
     result = [3,0,probality_output] if class_result else [0,3,probality_output]
     
