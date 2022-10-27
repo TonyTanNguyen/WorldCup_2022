@@ -359,16 +359,9 @@ hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
-            div .viewerBadge_link__1S137 {visibility: hidden;display: none;}
-            footer:after {
-            content:'goodbye'; 
-            visibility: visible;
-            display: block;
-            position: relative;
-            #background-color: red;
-            padding: 5px;
-            top: 2px;
-            }
+            div .viewerBadge_link__1S137 {visibility: hidden !important;display: none !important;}
+            a {visibility: hidden !important;display: none !important;}
+            viewerBadge_container__1QSob {visibility: hidden !important;display: none !important;}
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
