@@ -385,7 +385,7 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
-img_link = 'https://i.ibb.co/C0bVGMh/Artboard-4.png'
+img_link = 'https://i.ibb.co/Z8TVWfZ/Email-Signature-banner-04.png'
 
 st.image(img_link)
 
