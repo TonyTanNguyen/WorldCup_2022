@@ -316,6 +316,7 @@ def main():
     nx.draw_networkx(H,pos= pos,with_labels=False,node_size=700,node_color = colors_node_list,width = 0.5)
     nx.draw_networkx_labels(H,pos, node_dict,font_size = 5,bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=.5, alpha=1))
     st.pyplot(fig)
+    st.balloons()
 
 
 
@@ -415,6 +416,7 @@ with tab2:
     bt_2_team = st.button("Predict!")
     if bt_2_team:
         predict_func(team1,team2)
+        st.balloons()
 
 
     # Using "with" notation
