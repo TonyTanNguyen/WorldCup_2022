@@ -380,7 +380,7 @@ hide_streamlit_style = """
             footer {visibility: hidden;}
             body {background-color: #EAFBFF;}
             #MainMenu {visibility: hidden;}
-	    .block-container.css-12oz5g7.egzxvld2 {background-color: #eee;}
+	    .block-container.css-12oz5g7.egzxvld2 {background-color: #EAFBFF;}
             
             </style>
             """
