@@ -395,6 +395,7 @@ with tab1:
         main()
 
 with tab2:
+    st.session_state.projects=teams
     def submit_delete_project():
         if st.session_state['selected1'] == st.session_state['selected2']:
             st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
