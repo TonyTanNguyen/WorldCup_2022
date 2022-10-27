@@ -316,7 +316,7 @@ st.markdown("<h1 style='text-align: center; color: red;'>Predicting FIFA World C
 st.write('&nbsp;')
 st.write('&nbsp;')
 
-slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
+# slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
 # slide2 =  st.sidebar.button('Go Predicting!')
 
 
@@ -329,67 +329,67 @@ slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
 
 
 
-if slide1 == 'About the model':
+# if slide1 == 'About the model':
     
-    st.write('&nbsp;')
-    st.image('https://i.ibb.co/GpVPmZx/1-Km-E-AC5-P0-HJlz-WFmbyjg.png')
-    st.write('&nbsp;')
-    st.markdown("#### Introduction")
-    st.write('With the 2022 FIFA World Cup incoming: We are curious to know which team will win using Machine Learning?')
+#     st.write('&nbsp;')
+#     st.image('https://i.ibb.co/GpVPmZx/1-Km-E-AC5-P0-HJlz-WFmbyjg.png')
+#     st.write('&nbsp;')
+#     st.markdown("#### Introduction")
+#     st.write('With the 2022 FIFA World Cup incoming: We are curious to know which team will win using Machine Learning?')
 
-    st.markdown("#### Goal")
-    st.write('Using Machine Learning to predict who is going to win the FIFA World Cup 2022.')
-    st.write('Predicting the outcome of individual matches for the entire competition.')
-    st.write('Running simulation of the next matches i.e quarter finals, semi finals and finals. These goals present a unique real-world Machine Learning prediction problem and involve solving various Machine Learning tasks: data integration, feature modelling and outcome prediction.')
+#     st.markdown("#### Goal")
+#     st.write('Using Machine Learning to predict who is going to win the FIFA World Cup 2022.')
+#     st.write('Predicting the outcome of individual matches for the entire competition.')
+#     st.write('Running simulation of the next matches i.e quarter finals, semi finals and finals. These goals present a unique real-world Machine Learning prediction problem and involve solving various Machine Learning tasks: data integration, feature modelling and outcome prediction.')
 
-    st.markdown("#### Data")
-    st.write('We used data from Kaggle, International football result fro 1870 to 2022. We will use results of historical matches since the beginning of the championship (1930) for all participating teams. We also used data ranking from 1992 to 2022 for building models')
-    st.markdown("#### How we build models?")
-    st.write('By using ML algorithms. For this one, we used Logistic Regresion, Random Forest and SVM. Ranking is the main input.')
-    st.write('We will base on the results of competitive matches only (not Friendly), and use rankings of the two teams from a match at that specific time. For example:')
-    st.write('Rankings of Brazil and Argentina in 1990 will be different with rankings of Brazil and Argentina in 2022, the same as others.')
-    st.markdown("#### How many algorithms that we built?")
-    st.write('3 algorithms in total. Random Forest, SVM and Logistic Regresion ')
+#     st.markdown("#### Data")
+#     st.write('We used data from Kaggle, International football result fro 1870 to 2022. We will use results of historical matches since the beginning of the championship (1930) for all participating teams. We also used data ranking from 1992 to 2022 for building models')
+#     st.markdown("#### How we build models?")
+#     st.write('By using ML algorithms. For this one, we used Logistic Regresion, Random Forest and SVM. Ranking is the main input.')
+#     st.write('We will base on the results of competitive matches only (not Friendly), and use rankings of the two teams from a match at that specific time. For example:')
+#     st.write('Rankings of Brazil and Argentina in 1990 will be different with rankings of Brazil and Argentina in 2022, the same as others.')
+#     st.markdown("#### How many algorithms that we built?")
+#     st.write('3 algorithms in total. Random Forest, SVM and Logistic Regresion ')
 
-elif slide1 == 'Go Predicting!':
+# elif slide1 == 'Go Predicting!':
     
-    img_link = 'https://static-images.vnncdn.net/files/publish/2022/6/14/world-cup-2022-195.jpg'
-    
-
-    st.image(img_link)
+img_link = 'https://static-images.vnncdn.net/files/publish/2022/6/14/world-cup-2022-195.jpg'
 
 
-    model_selection = st.radio('Please select algorithm',['Logistic Regrestion','Random Forest','SVC'])
-    if model_selection == 'Logistic Regrestion':
-        loaded_model = lr_model
-        loaded_model_proba = loaded_model
-    elif model_selection == 'Random Forest':
-        loaded_model = rf_model
-        loaded_model_proba = rf_model 
-
-    elif model_selection == 'SVC':
-        loaded_model = svc_model
-        loaded_model_proba = svc_model_proba
-
-    st.markdown("""---""")
-    tab1, tab2 = st.tabs(["Full FiFa World Cup 2022 Predicting", "Predict between 2 teams"])
-
-    with tab1:
-        
+st.image(img_link)
 
 
-        bt = st.button('Start Predicting!')
+model_selection = st.radio('Please select algorithm',['Logistic Regrestion','Random Forest','SVC'])
+if model_selection == 'Logistic Regrestion':
+    loaded_model = lr_model
+    loaded_model_proba = loaded_model
+elif model_selection == 'Random Forest':
+    loaded_model = rf_model
+    loaded_model_proba = rf_model 
+
+elif model_selection == 'SVC':
+    loaded_model = svc_model
+    loaded_model_proba = svc_model_proba
+
+st.markdown("""---""")
+tab1, tab2 = st.tabs(["Full FiFa World Cup 2022 Predicting", "Predict between 2 teams"])
+
+with tab1:
 
 
-        if bt:
-            main()
 
-    with tab2:
-        team1 = st.selectbox("Select Team 1",teams)
-        team2 = st.selectbox("Select Team 2",teams)
-        bt_2_team = st.button("Predict!")
-        if bt_2_team:
-            predict_func(team1,team2)
+    bt = st.button('Start Predicting!')
+
+
+    if bt:
+        main()
+
+with tab2:
+    team1 = st.selectbox("Select Team 1",teams)
+    team2 = st.selectbox("Select Team 2",teams)
+    bt_2_team = st.button("Predict!")
+    if bt_2_team:
+        predict_func(team1,team2)
 
 
     # Using "with" notation
