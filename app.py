@@ -112,7 +112,8 @@ def main():
     st.markdown("""---""")
     # quater_final pairs
     round_of_16_matches = []
-    st.markdown("\n\n\n#### =================== ROUND OF 16 ===================")
+#     st.markdown("\n\n\n#### =================== ROUND OF 16 ===================")
+    st.markdown("<h2 style='text-align: center;>=================== ROUND OF 16 ==================='/h2>",unsafe_allow_html=True)
     for i in range(0,len(round_of_16_pairs),2):
         winner_group_1 = round_of_16_pairs[i][0][0]
         runners_up_group_2 = round_of_16_pairs[i+1][0][1]
@@ -162,7 +163,7 @@ def main():
     quarter_final_df = pd.DataFrame(quater_final_list,columns=['Team 1','Team 2'])
     
 #     st.markdown('\n#### ========== QUATER-FINALS ==========')
-    st.markdown("<h2 style='text-align: center;>========== QUATER-FINALS =========='/h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;>========== QUATER-FINALS =========='</h2>",unsafe_allow_html=True)
     st.table(quarter_final_df.reset_index(drop=True))
 
 
@@ -192,7 +193,7 @@ def main():
     semi_final_df = pd.DataFrame(semi_final_list,columns=['Team 1','Team 2'])
     
 #     st.markdown('\n#### ========== SEMI-FINALS ==========')
-    st.markdown("<h2 style='text-align: center;>========== SEMI-FINALS =========='/h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;>========== SEMI-FINALS =========='</h2>",unsafe_allow_html=True)
     st.table(semi_final_df)
 
     grand_final_list = []
