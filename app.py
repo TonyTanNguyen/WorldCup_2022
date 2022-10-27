@@ -162,6 +162,8 @@ def main():
 
     quarter_final_df = pd.DataFrame(quater_final_list,columns=['Team 1','Team 2'])
     
+    
+    st.markdown("""---""")
 #     st.markdown('\n#### ========== QUATER-FINALS ==========')
     st.markdown("<h2 style='text-align: center';>QUATER-FINALS</h2>",unsafe_allow_html=True)
     st.table(quarter_final_df.reset_index(drop=True))
