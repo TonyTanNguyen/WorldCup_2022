@@ -359,7 +359,7 @@ hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
-            viewerBadge_container__1QSob {visibility: hidden;display: none;}
+            a {visibility: hidden;display: none;}
             viewerBadge_link__1S137 {visibility: hidden;display: none;}
             </style>
             """
