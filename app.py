@@ -359,7 +359,7 @@ hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
-            div.viewerBadge_link__1S137 {visibility: hidden;display: none;}
+            div .viewerBadge_link__1S137 {visibility: hidden;display: none;}
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
