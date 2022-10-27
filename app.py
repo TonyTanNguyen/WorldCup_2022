@@ -71,7 +71,7 @@ def predict_func(home_team,away_team):
     result = [3,0,probality_output] if class_result else [0,3,probality_output]
     
 #     st.markdown(f"Group {group_name}:")
-    st.markdown(f"<b style='color:red'>{home_team}</b> vs. <b style='color:red'>{away_team}</b>: <b style='color:blue'>{team_win}</b> wins with probability <b>{probality_output_text}</b>",unsafe_allow_html=True)
+    st.write(f"<b style='color:red'>{home_team}</b> vs. <b style='color:red'>{away_team}</b>: <b style='color:blue'>{team_win}</b> wins with probability <b>{probality_output_text}</b>",unsafe_allow_html=True)
 #     st.markdown("========================================================\n")
 #     time.sleep(0.1)
     return result
@@ -79,7 +79,7 @@ def main():
     currentgroup = ''
     group_stage_result = {}
 #     st.markdown('\n##### ***************** GROUP STAGE PREDICTING *****************')
-    st.markdown("<h2 style='text-align: center;> GROUP STAGE PREDICTING </h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center';> GROUP STAGE PREDICTING </h2>",unsafe_allow_html=True)
     for index, row in wc_22_matches_groupstage.iterrows():
         newgroup = row['Group']
         if newgroup != currentgroup:
