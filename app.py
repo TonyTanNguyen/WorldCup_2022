@@ -247,7 +247,7 @@ def main():
     st.table(grand_final_df.reset_index(drop=True))
 
 #     st.markdown('\n\n\n\n****======= FIFA WOURLD CUP 2022 CHAMPIONS=======****')
-    st.markdown("<h2 style='text-align: center'; color:'red'>FIFA WOURLD CUP 2022 CHAMPIONS</h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color:red'>FIFA WOURLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
     st.markdown(f"## {champion}")
 
 
