@@ -325,8 +325,6 @@ def main():
 
 #================================== UI =========================================
 # st.markdown("<h1 style='text-align: center; color: red;'>Predicting FIFA World Cup 2022 using Machine Learning</h1>", unsafe_allow_html=True)
-st.write('&nbsp;')
-st.write('&nbsp;')
 
 # slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
 # slide2 =  st.sidebar.button('Go Predicting!')
