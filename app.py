@@ -352,7 +352,16 @@ st.write('&nbsp;')
 #     st.write('3 algorithms in total. Random Forest, SVM and Logistic Regresion ')
 
 # elif slide1 == 'Go Predicting!':
-    
+
+
+
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 img_link = 'https://static-images.vnncdn.net/files/publish/2022/6/14/world-cup-2022-195.jpg'
 
 
