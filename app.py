@@ -357,7 +357,7 @@ st.write('&nbsp;')
 
 hide_streamlit_style = """
             <style>
-            
+            #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             body {background-color: #fff;}
            
