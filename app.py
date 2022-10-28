@@ -31,6 +31,14 @@ group_order = pd.read_csv('Qatar2022-teams.csv',sep=';')
 group_order.columns = ['Team','Group']
 teams = group_order['Team'].sort_values(ascending=True).to_list()
 
+groupA = group_order[group_order['Group'] == 'A']['Team'].to_list()
+groupB = group_order[group_order['Group'] == 'B']['Team'].to_list()
+groupC = group_order[group_order['Group'] == 'C']['Team'].to_list()
+groupD = group_order[group_order['Group'] == 'D']['Team'].to_list()
+groupE = group_order[group_order['Group'] == 'E']['Team'].to_list()
+groupF = group_order[group_order['Group'] == 'F']['Team'].to_list()
+groupG = group_order[group_order['Group'] == 'G']['Team'].to_list()
+groupH = group_order[group_order['Group'] == 'H']['Team'].to_list()
 
 wc_22_matches_groupstage = wc_22_matches[wc_22_matches['phase']=='group matches']
 
@@ -100,20 +108,27 @@ def main():
     group_stage_result_df = pd.DataFrame({'Country':group_stage_result.keys(),'Score':group_stage_result.values()}).sort_values('Score',ascending=False)
     # group_stage_result_df.to_excel('after_group_stage.xlsx') #Export to excel
     group_stage_result_df = pd.merge(group_stage_result_df,group_order,left_on = 'Country',right_on = 'Team')[['Country','Score','Group']].sort_values(by=['Group','Score'],ascending=[True,False])
-    round_of_16_pairs = []
-    node = []
+    round_of_16_pairs_a = []
+    
     st.markdown("\n\n\n##### ======= SCORE AFTER GROUP STAGE =======")
     
     for gr in group_stage_result_df['Group'].unique():
         current_group = group_stage_result_df[group_stage_result_df['Group']==gr]
-        round_of_16_pairs.append([current_group['Country'][:2].values])
+        round_of_16_pairs_a.append([current_group['Country'][:2].values])
         st.table(current_group.reset_index(drop=True))
     
     st.markdown("""---""")
     # quater_final pairs
-    round_of_16_matches = []
+    
+
+    
 #     st.markdown("\n\n\n#### =================== ROUND OF 16 ===================")
     st.markdown("<h2 style='text-align: center';>ROUND OF 16</h2>",unsafe_allow_html=True)
+   
+    predict_top_16(round_of_16_pairs_a)
+def predict_top_16(round_of_16_pairs):
+    round_of_16_matches = []
+    node = []
     for i in range(0,len(round_of_16_pairs),2):
         winner_group_1 = round_of_16_pairs[i][0][0]
         runners_up_group_2 = round_of_16_pairs[i+1][0][1]
@@ -129,19 +144,19 @@ def main():
         # st.markdown(f"{winner_group_2} vs. {runners_up_group_1}")
         round_of_16_matches.append([winner_group_1,runners_up_group_2])
         round_of_16_matches.append([winner_group_2,runners_up_group_1])
-        
+    
     st.markdown("\n\n\n======= ROUND OF 16 IN TABLE =======")
     round_of_16_matches_df = pd.DataFrame(round_of_16_matches,columns=['Team 1','Team 2']).reset_index()
     round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
     st.table(round_of_16_matches_df.reset_index(drop=True))
 
 
-    
 
     quater_final_list = []
 
     round_of_16_matches_df['Team wins'] = ''
     round_of_16_matches_df['Proba_win'] = pd.Series().astype(float)
+    
 
     dump_semi = []
 
@@ -265,6 +280,7 @@ def main():
     colors_node_list = [colors_dict[i] for i in node]
     colors_node_list = list(reversed(colors_node_list))
     node_dict = dict()
+
     for i in range(31):
         node_dict[i] = node[30-i]
     
@@ -431,8 +447,40 @@ with tab2:
         st.balloons()
 
 with tab3:
-	groupA = st.multiselect('Group A',['A','B','C'],max_selections = 2)
+    col1,col2,col3,col4 = st.columns(4)
+    with col1:
+        groupA_sel = st.multiselect('Group A',groupA,max_selections = 2)
+        groupE_sel = st.multiselect('Group E',groupE,max_selections = 2)
+    with col2:
+        groupB_sel = st.multiselect('Group B',groupB,max_selections = 2)
+        groupF_sel = st.multiselect('Group F',groupF,max_selections = 2)
+    with col3:
+        groupC_sel = st.multiselect('Group C',groupC,max_selections = 2)
+        groupG_sel = st.multiselect('Group G',groupG,max_selections = 2)
+    with col4:
+        groupD_sel = st.multiselect('Group D',groupD,max_selections = 2)
+        groupH_sel = st.multiselect('Group H',groupH,max_selections = 2)
+    tab3_button  = st.button('Start Predicting!',key = 'dsfjksdkf')
+    check_bt = st.button('Check Line up')
+    if check_bt:
+        check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
+        if check_if_ok == 16:
+            teams_input = [[groupA_sel[0],groupB_sel[1]],[groupA_sel[1],groupB_sel[0]],[groupC_sel[0],groupD_sel[1]],[groupC_sel[1],groupD_sel[0]],[groupE_sel[0],groupF_sel[1]],[groupE_sel[1],groupF_sel[0]],[groupG_sel[0],groupH_sel[1]],[groupG_sel[1],groupH_sel[0]]]
+            round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
+            round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
+            st.table(round_of_16_matches_df)
+        else:
+            st.warning('Need 16 teams in total!')
+    if tab3_button:
+        check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
+        if check_if_ok == 16:
+            round_of_16_pairs_b = [[[groupA_sel[0],groupB_sel[1]]],[[groupA_sel[1],groupB_sel[0]]],[[groupC_sel[0],groupD_sel[1]]],[[groupC_sel[1],groupD_sel[0]]],[[groupE_sel[0],groupF_sel[1]]],[[groupE_sel[1],groupF_sel[0]]],[[groupG_sel[0],groupH_sel[1]]],[[groupG_sel[1],groupH_sel[0]]]]
 
+        # round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
+        # round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
+            predict_top_16(round_of_16_pairs_b)
+        
+            st.balloons()
+        else:
+            st.warning('Cannot Predict, need 16 teams in total!')
     # Using "with" notation
-
-
