@@ -406,7 +406,7 @@ elif model_selection == 'SVC':
     loaded_model_proba = svc_model_proba
 
 st.markdown("""---""")
-tab1, tab2 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams"])
+tab1, tab2, tab3 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams", "Pick your top 16"])
 
 with tab1:
 
@@ -430,6 +430,8 @@ with tab2:
         predict_func(team1,team2)
         st.balloons()
 
+with tab3:
+	groupA = st.multiselect('Group A',['A','B','C'],max_selections = 2)
 
     # Using "with" notation
 
