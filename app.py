@@ -7,7 +7,7 @@ import time
 import random
 import pickle
 import networkx as nx
-pip install --upgrade streamlit
+
 # pd.options.st.table.float_format = "{:,.3f}".format
 filename_rf = 'RF_WC_Predictor.sav'
 filename_lr = 'Logic_WC_Predictor.sav'
