@@ -246,8 +246,8 @@ def main():
     st.markdown('\n\n\n\n======= GRAND-FINALS RESULT IN TABLE ========')
     st.table(grand_final_df.reset_index(drop=True))
 
-#     st.markdown('\n\n\n\n****======= FIFA WOURLD CUP 2022 CHAMPIONS=======****')
-    st.markdown("<h2 style='text-align: center; color:red'>FIFA WOURLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
+#     st.markdown('\n\n\n\n****======= FIFA WORLD CUP 2022 CHAMPION=======****')
+    st.markdown("<h2 style='text-align: center; color:red'>FIFA WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
     st.markdown(f"## {champion}")
 
 
@@ -406,7 +406,7 @@ elif model_selection == 'SVC':
     loaded_model_proba = svc_model_proba
 
 st.markdown("""---""")
-tab1, tab2 = st.tabs(["Full FiFa World Cup 2022 Predicting", "Predict between 2 teams"])
+tab1, tab2 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams"])
 
 with tab1:
 
