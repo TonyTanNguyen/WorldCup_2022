@@ -7,7 +7,6 @@ import time
 import random
 import pickle
 import networkx as nx
-
 # pd.options.st.table.float_format = "{:,.3f}".format
 filename_rf = 'RF_WC_Predictor.sav'
 filename_lr = 'Logic_WC_Predictor.sav'
@@ -19,7 +18,40 @@ lr_model = pickle.load(open(filename_lr, 'rb'))
 svc_model = pickle.load(open(filename_svc, 'rb'))
 svc_model_proba = pickle.load(open(filename_svc_proba, 'rb'))
 
-
+flags = {
+    "Uruguay":'🇺🇾',
+    "Netherlands": '🇳🇱',
+    "Belgium": '🇧🇪',
+    "France": '🇫🇷',
+    "England":'🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+    "Brazil":'🇧🇷',
+    "Germany": '🇩🇪',
+    "Argentina":'🇦🇷',
+    "Switzerland": '🇨🇭',
+    "Croatia": '🇭🇷' ,
+    "Denmark":'🇩🇰',
+    "Spain":'🇪🇸',
+    "Mexico":'🇲🇽',
+    "USA":'🇺🇸',
+    "Portugal":'🇵🇹',
+    "Senegal":'🇸🇳',
+    "South Korea":'🇰🇷',
+    "Morocco":'🇲🇦',
+    "Serbia":'🇷🇸',
+    "Japan":'🇯🇵',
+    "Ecuador":'🇪🇨',
+    "Tunisia":'🇹🇳',
+    "Poland":'🇵🇱',
+    "Iran":'🇮🇷',
+    "Costa Rica":'🇨🇷',
+    "Canada":'🇨🇦',
+    "Cameroon":'🇨🇲',
+    "Australia":'🇦🇺',
+    "Saudi Arabia":'🇸🇦',
+    "Wales":'🏴󠁧󠁢󠁷󠁬󠁳󠁿',
+    "Ghana":'🇬🇭',
+    "Qatar":'🇶🇦',
+}
 
 
 
@@ -79,7 +111,7 @@ def predict_func(home_team,away_team):
     result = [3,0,probality_output] if class_result else [0,3,probality_output]
     
 #     st.markdown(f"Group {group_name}:")
-    st.write(f"<b style='color:red'>{home_team}</b> vs. <b style='color:red'>{away_team}</b>: <b style='color:blue'>{team_win}</b> wins with probability <b>{probality_output_text}</b>",unsafe_allow_html=True)
+    st.write(f"<b style='color:red'> {flags[home_team]}{home_team}</b> :soccer: <b style='color:red'>{flags[away_team]}{away_team}</b>: <b style='color:blue'>{flags[team_win]}{team_win}</b> wins with probability <b>{probality_output_text}</b>",unsafe_allow_html=True)
 #     st.markdown("========================================================\n")
 #     time.sleep(0.1)
     return result
@@ -87,7 +119,7 @@ def main():
     currentgroup = ''
     group_stage_result = {}
 #     st.markdown('\n##### ***************** GROUP STAGE PREDICTING *****************')
-    st.markdown("<h2 style='text-align: center';> GROUP STAGE PREDICTING </h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center';> &#x1F50E; GROUP STAGE PREDICTING &#x1F50D; </h2>",unsafe_allow_html=True)
     for index, row in wc_22_matches_groupstage.iterrows():
         newgroup = row['Group']
         if newgroup != currentgroup:
@@ -115,15 +147,15 @@ def main():
     for gr in group_stage_result_df['Group'].unique():
         current_group = group_stage_result_df[group_stage_result_df['Group']==gr]
         round_of_16_pairs_a.append([current_group['Country'][:2].values])
+        current_group['Country'] = current_group['Country'].map(lambda x: flags[x] + x)
         st.table(current_group.reset_index(drop=True))
     
     st.markdown("""---""")
     # quater_final pairs
     
-
     
 #     st.markdown("\n\n\n#### =================== ROUND OF 16 ===================")
-    st.markdown("<h2 style='text-align: center';>ROUND OF 16</h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center';> &#x1F50E; ROUND OF 16 &#x1F50D; </h2>",unsafe_allow_html=True)
    
     predict_top_16(round_of_16_pairs_a)
 def predict_top_16(round_of_16_pairs):
@@ -145,9 +177,10 @@ def predict_top_16(round_of_16_pairs):
         round_of_16_matches.append([winner_group_1,runners_up_group_2])
         round_of_16_matches.append([winner_group_2,runners_up_group_1])
     
-    st.markdown("\n\n\n======= ROUND OF 16 IN TABLE =======")
+    # st.markdown("\n\n\n======= ROUND OF 16 IN TABLE =======")
     round_of_16_matches_df = pd.DataFrame(round_of_16_matches,columns=['Team 1','Team 2']).reset_index()
     round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
+    
     st.table(round_of_16_matches_df.reset_index(drop=True))
 
 
@@ -180,7 +213,7 @@ def predict_top_16(round_of_16_pairs):
     
     st.markdown("""---""")
 #     st.markdown('\n#### ========== QUATER-FINALS ==========')
-    st.markdown("<h2 style='text-align: center';>QUATER-FINALS</h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center';>&#x1F50E; QUATER-FINALS &#x1F50D;</h2>",unsafe_allow_html=True)
     st.table(quarter_final_df.reset_index(drop=True))
 
 
@@ -210,7 +243,7 @@ def predict_top_16(round_of_16_pairs):
     semi_final_df = pd.DataFrame(semi_final_list,columns=['Team 1','Team 2'])
     
 #     st.markdown('\n#### ========== SEMI-FINALS ==========')
-    st.markdown("<h2 style='text-align: center';>SEMI-FINALS</h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center';>&#x1F50E; SEMI-FINALS &#x1F50D;</h2>",unsafe_allow_html=True)
     st.table(semi_final_df)
 
     grand_final_list = []
@@ -239,11 +272,11 @@ def predict_top_16(round_of_16_pairs):
     grand_final_df = pd.DataFrame(grand_final_list,columns=['Team 1','Team 2'])
     
 #     st.markdown('\n#### ========== GRAND-FINALS ==========')
-    st.markdown("<h2 style='text-align: center';>GRAND-FINALS</h2>",unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center';>&#x1F50E; GRAND-FINAL &#x1F50D;</h2>",unsafe_allow_html=True)
     st.table(grand_final_df)
 
     champion = ''
-
+    runners_up = ''
     grand_final_df['Team wins'] = ''
     grand_final_df['Proba_win'] = pd.Series().astype(float)
 
@@ -251,6 +284,7 @@ def predict_top_16(round_of_16_pairs):
 
         output_result = predict_func(row['Team 1'], row['Team 2'])
         champion = row['Team 1'] if output_result[0]==3 else row['Team 2']
+        runners_up = row['Team 1'] if output_result[0]==0 else row['Team 2']
     #     dump_semi.append(win_team)
     #     if len(dump_semi)==2:
     #          grand_final_list.append(dump_semi)
@@ -263,8 +297,8 @@ def predict_top_16(round_of_16_pairs):
 
 #     st.markdown('\n\n\n\n****======= FIFA WORLD CUP 2022 CHAMPION=======****')
     st.markdown("<h2 style='text-align: center; color:red'>FIFA WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
-    st.markdown(f"## {champion}")
-
+    st.markdown(f"### :trophy: {flags[champion]}{champion}")
+    st.markdown(f"### 🥈 {flags[runners_up]}{runners_up}")
 
     st.markdown("""---""")
     #Visualize
@@ -282,7 +316,7 @@ def predict_top_16(round_of_16_pairs):
     node_dict = dict()
 
     for i in range(31):
-        node_dict[i] = node[30-i]
+        node_dict[i] =  node[30-i]
     
 
     
@@ -328,6 +362,7 @@ def predict_top_16(round_of_16_pairs):
         30:(-4,-3)
         
     }
+    
     #Draw labels based on node positions
     nx.draw_networkx(H,pos= pos,with_labels=False,node_size=700,node_color = colors_node_list,width = 0.5)
     nx.draw_networkx_labels(H,pos, node_dict,font_size = 5,bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=.5, alpha=1))
@@ -424,6 +459,10 @@ elif model_selection == 'SVC':
 st.markdown("""---""")
 tab1, tab2, tab3 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams", "Pick your top 16"])
 
+def show_flag(selected_country):
+    return flags[selected_country] + selected_country
+
+
 with tab1:
 
 
@@ -439,27 +478,45 @@ with tab2:
     def submit_delete_project():
         if st.session_state['selected1'] == st.session_state['selected2']:
             st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
-    team1 = st.selectbox("Select Team 1",st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1)
-    team2 = st.selectbox("Select Team 2",st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2)
+    team1 = st.selectbox("Select Team 1",st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
+    team2 = st.selectbox("Select Team 2",st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
     bt_2_team = st.button("Predict!")
     if bt_2_team:
         predict_func(team1,team2)
         st.balloons()
 
 with tab3:
-    col1,col2,col3,col4 = st.columns(4)
-    with col1:
-        groupA_sel = st.multiselect('Group A',groupA,max_selections = 2)
-        groupE_sel = st.multiselect('Group E',groupE,max_selections = 2)
-    with col2:
-        groupB_sel = st.multiselect('Group B',groupB,max_selections = 2)
-        groupF_sel = st.multiselect('Group F',groupF,max_selections = 2)
-    with col3:
-        groupC_sel = st.multiselect('Group C',groupC,max_selections = 2)
-        groupG_sel = st.multiselect('Group G',groupG,max_selections = 2)
-    with col4:
-        groupD_sel = st.multiselect('Group D',groupD,max_selections = 2)
-        groupH_sel = st.multiselect('Group H',groupH,max_selections = 2)
+    with st.container():
+        col1,col2,col3,col4 = st.columns(4)
+        with col1:
+            groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
+            # groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
+        with col2:
+            groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
+            # groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
+        with col3:
+            groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
+            # groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
+        with col4:
+            groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
+            # groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
+
+    with st.container():
+        col5,col6,col7,col8 = st.columns(4)
+        with col5:
+            # groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
+            groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
+        with col6:
+            # groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
+            groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
+        with col7:
+            # groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
+            groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
+        with col8:
+            # groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
+            groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
+
+
     tab3_button  = st.button('Start Predicting!',key = 'dsfjksdkf')
     check_bt = st.button('Check Line up')
     if check_bt:
@@ -467,6 +524,8 @@ with tab3:
         if check_if_ok == 16:
             teams_input = [[groupA_sel[0],groupB_sel[1]],[groupB_sel[0],groupA_sel[1]],[groupC_sel[0],groupD_sel[1]],[groupD_sel[0],groupC_sel[1]],[groupE_sel[0],groupF_sel[1]],[groupF_sel[0],groupE_sel[1]],[groupG_sel[0],groupH_sel[1]],[groupH_sel[0],groupG_sel[1]]]
             round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
+            round_of_16_matches_df['Team 1'] = round_of_16_matches_df['Team 1'].map(lambda x: flags[x] + x)
+            round_of_16_matches_df['Team 2'] = round_of_16_matches_df['Team 2'].map(lambda x: flags[x] + x)
             round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
             st.table(round_of_16_matches_df)
         else:
