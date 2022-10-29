@@ -295,7 +295,7 @@ def predict_top_16(round_of_16_pairs):
     st.markdown('\n\n\n\n======= GRAND-FINALS RESULT IN TABLE ========')
     st.table(grand_final_df.reset_index(drop=True))
 
-#     st.markdown('\n\n\n\n****======= FIFA WORLD CUP 2022 CHAMPION=======****')
+#     st.markdown('\n\n\n\n****======= FIFA WORLD CUP 2022 RESULT=======****')
     st.markdown("<h2 style='text-align: center; color:red'>FIFA WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
     st.markdown(f"### :trophy: {flags[champion]}{champion}")
     st.markdown(f"### 🥈 {flags[runners_up]}{runners_up}")
