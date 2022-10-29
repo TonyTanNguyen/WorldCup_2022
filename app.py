@@ -482,7 +482,7 @@ with tab2:
     if bt_2_team:
         predict_func(team1,team2)
         st.balloons()
-
+		
 with tab3:
     with st.container():
         col1,col2,col3,col4 = st.columns(4)
