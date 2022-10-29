@@ -284,14 +284,14 @@ def predict_top_16(round_of_16_pairs):
 
         output_result = predict_func(row['Team 1'], row['Team 2'])
         champion = row['Team 1'] if output_result[0]==3 else row['Team 2']
-        runners_up = row['Team 1'] if output_result[0]==0 else row['Team 2']
+        runners_up = row['Team 1'] if output_result[0]!=3 else row['Team 2']
     #     dump_semi.append(win_team)
     #     if len(dump_semi)==2:
     #          grand_final_list.append(dump_semi)
     #         dump_semi = []
-        grand_final_df.loc[index,'Team wins'] = win_team
+        grand_final_df.loc[index,'Team wins'] = champion
         grand_final_df.loc[index,'Proba_win'] = round(output_result[2],3)
-        node.append(win_team)
+        node.append(champion)
     st.markdown('\n\n\n\n======= GRAND-FINALS RESULT IN TABLE ========')
     st.table(grand_final_df.reset_index(drop=True))
 
