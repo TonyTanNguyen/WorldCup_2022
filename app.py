@@ -466,10 +466,8 @@ def show_flag(selected_country):
 with tab1:
 	st.write("Start predicting with selected algorithm from the group stage until final match")
 	bt = st.button('Start Predicting!')
-
-
-    if bt:
-        main()
+	if bt:
+		main()
 
 with tab2:
     st.session_state.projects=teams
