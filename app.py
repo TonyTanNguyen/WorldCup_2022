@@ -465,7 +465,7 @@ with tab3:
     if check_bt:
         check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
         if check_if_ok == 16:
-            teams_input = [[groupA_sel[0],groupB_sel[1]],[groupA_sel[1],groupB_sel[0]],[groupC_sel[0],groupD_sel[1]],[groupC_sel[1],groupD_sel[0]],[groupE_sel[0],groupF_sel[1]],[groupE_sel[1],groupF_sel[0]],[groupG_sel[0],groupH_sel[1]],[groupG_sel[1],groupH_sel[0]]]
+            teams_input = [[groupA_sel[0],groupB_sel[1]],[groupB_sel[0],groupA_sel[1]],[groupC_sel[0],groupD_sel[1]],[groupD_sel[0],groupC_sel[1]],[groupE_sel[0],groupF_sel[1]],[groupF_sel[0],groupE_sel[1]],[groupG_sel[0],groupH_sel[1]],[groupH_sel[0],groupG_sel[1]]]
             round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
             round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
             st.table(round_of_16_matches_df)
@@ -474,7 +474,8 @@ with tab3:
     if tab3_button:
         check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
         if check_if_ok == 16:
-            round_of_16_pairs_b = [[[groupA_sel[0],groupB_sel[1]]],[[groupA_sel[1],groupB_sel[0]]],[[groupC_sel[0],groupD_sel[1]]],[[groupC_sel[1],groupD_sel[0]]],[[groupE_sel[0],groupF_sel[1]]],[[groupE_sel[1],groupF_sel[0]]],[[groupG_sel[0],groupH_sel[1]]],[[groupG_sel[1],groupH_sel[0]]]]
+            # round_of_16_pairs_b = [[[groupA_sel[0],groupB_sel[1]]],[[groupA_sel[1],groupB_sel[0]]],[[groupC_sel[0],groupD_sel[1]]],[[groupC_sel[1],groupD_sel[0]]],[[groupE_sel[0],groupF_sel[1]]],[[groupE_sel[1],groupF_sel[0]]],[[groupG_sel[0],groupH_sel[1]]],[[groupG_sel[1],groupH_sel[0]]]]
+            round_of_16_pairs_b = [[[groupA_sel[0],groupA_sel[1]]],[[groupB_sel[0],groupB_sel[1]]],[[groupC_sel[0],groupC_sel[1]]],[[groupD_sel[0],groupD_sel[1]]],[[groupE_sel[0],groupE_sel[1]]],[[groupF_sel[0],groupF_sel[1]]],[[groupG_sel[0],groupG_sel[1]]],[[groupH_sel[0],groupH_sel[1]]]]
 
         # round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
         # round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
