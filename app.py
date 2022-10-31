@@ -445,7 +445,7 @@ st.image(img_link)
 
 
 model_selection = st.radio('Please select algorithm',['Logistic Regression','Random Forest','SVC'])
-if model_selection == 'Logistic Regrestion':
+if model_selection == 'Logistic Regression':
     loaded_model = lr_model
     loaded_model_proba = loaded_model
 elif model_selection == 'Random Forest':
