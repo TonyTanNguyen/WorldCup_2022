@@ -163,14 +163,31 @@ def predict_func(home_team,away_team):
     input_team = [filter_country(home_team),filter_country(away_team),True]
     home_rank = current_ranking_dict[input_team[0]]
     away_rank = current_ranking_dict[input_team[1]]
-    
+
     average_rank = (home_rank + away_rank)/2
-    rank_diff = home_rank - away_rank
+    rank_diff = home_rank - away_rank 
+    rank_diff2 = away_rank - home_rank
     is_stake = input_team[2]
+
     input_for_predict = np.asarray([[average_rank,rank_diff,is_stake]])
+    input_for_predict2 = np.asarray([[average_rank,rank_diff2,is_stake]])
+
     class_result = loaded_model.predict(input_for_predict)[0]
+    class_result2 = loaded_model.predict(input_for_predict2)[0]
+
     probality = loaded_model_proba.predict_proba(input_for_predict)[0]
+    probality2 = loaded_model_proba.predict_proba(input_for_predict2)[0]
+
+    if class_result == class_result2:
+        if probality[0] > probality2[0]:
+            probality = probality2
+            home_team,away_team = away_team,home_team
+
+
+
     probality_output = probality[0] if probality[0] > probality[1] else probality[1]
+
+
     probality_output_text = str(round(probality_output*100,3)) + '%'
     team_win = home_team if class_result else away_team
     result = [3,0,probality_output] if class_result else [0,3,probality_output]
