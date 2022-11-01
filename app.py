@@ -152,7 +152,7 @@ def simulation(df,year,times):
         result_df = result_df.loc[teams]
         
         total_count = result_df['result'].sum()
-        result_df['percent'] = result_df['result'].map(lambda x: (x/total_count)*100)
+        result_df['percent'] = result_df['result'].map(lambda x: round((x/total_count)*100,3))
         result_df = result_df.sort_values(by='percent',ascending = False)
 
         return result_df
