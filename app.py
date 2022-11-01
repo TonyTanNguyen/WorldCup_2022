@@ -638,7 +638,7 @@ with tab4:
         
 		simu_df = simulation(df_ranking,select_simu,simulating_time)
 		for index,col in enumerate(simu_df.iloc):
-			st.write(f"{index+1} {col.name} with probability: {col.percent}")
+			st.write(f"{index+1} <b style='color:red'>{col.name} </b> with probability: <b style='color:blue'>{col.percent}% </b>",unsafe_allow_html=True)
 		st.table(simu_df)
 		@st.cache
 		def to_excel(df):
