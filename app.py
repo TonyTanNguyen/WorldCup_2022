@@ -634,26 +634,26 @@ with tab4:
 	simu_button = st.button('Start simulating!')
 	select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
 	simulating_time = st.selectbox('How many times would you like to simulate?',[5000,10000,20000,50000,100000,1000000])
-    if simu_button:
+	if simu_button:
         
-        simu_df = simulation(df_ranking,select_simu,simulating_time)
-        for index,col in enumerate(simu_df.iloc):
-            st.write(f"{index+1} {col.name} with probability: {col.percent}")
-        st.table(simu_df)
-        @st.cache
-        def to_excel(df):
-            output = BytesIO()
-            writer = pd.ExcelWriter(output, engine='xlsxwriter')
-            df.to_excel(writer, index=False, sheet_name='Sheet1')
-            workbook = writer.book
-            worksheet = writer.sheets['Sheet1']
-            format1 = workbook.add_format({'num_format': '0.00'}) 
-            worksheet.set_column('A:A', None, format1)  
-            writer.save()
-            processed_data = output.getvalue()
-            return processed_data
+		simu_df = simulation(df_ranking,select_simu,simulating_time)
+		for index,col in enumerate(simu_df.iloc):
+			st.write(f"{index+1} {col.name} with probability: {col.percent}")
+		st.table(simu_df)
+		@st.cache
+		def to_excel(df):
+			output = BytesIO()
+			writer = pd.ExcelWriter(output, engine='xlsxwriter')
+			df.to_excel(writer, index=False, sheet_name='Sheet1')
+			workbook = writer.book
+			worksheet = writer.sheets['Sheet1']
+			format1 = workbook.add_format({'num_format': '0.00'}) 
+			worksheet.set_column('A:A', None, format1)  
+			writer.save()
+			processed_data = output.getvalue()
+			return processed_data
 
-        simu_df = simu_df.reset_index()
-        simu_df.columns=['Team','result','percent']
-        df_xlsx = to_excel(simu_df)
-        st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
+		simu_df = simu_df.reset_index()
+		simu_df.columns=['Team','result','percent']
+		df_xlsx = to_excel(simu_df)
+		st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
