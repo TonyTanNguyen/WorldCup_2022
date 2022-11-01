@@ -8,12 +8,13 @@ import random
 import pickle
 import networkx as nx
 
-
+import random
 from collections import Counter
 import json
+import pandas as pd
+import numpy as np
 import time
 import simulation
-
 
 
 # pd.options.st.table.float_format = "{:,.3f}".format
@@ -27,6 +28,9 @@ lr_model = pickle.load(open(filename_lr, 'rb'))
 svc_model = pickle.load(open(filename_svc, 'rb'))
 svc_model_proba = pickle.load(open(filename_svc_proba, 'rb'))
 
+
+
+
 flags = {
     "Uruguay":'🇺🇾',
     "Netherlands": '🇳🇱',
@@ -37,7 +41,7 @@ flags = {
     "Germany": '🇩🇪',
     "Argentina":'🇦🇷',
     "Switzerland": '🇨🇭',
-    "Croatia": '🇭🇷' ,
+    "Croatia": '🇭🇷',
     "Denmark":'🇩🇰',
     "Spain":'🇪🇸',
     "Mexico":'🇲🇽',
@@ -62,6 +66,7 @@ flags = {
     "Qatar":'🇶🇦',
 }
 
+
 f = open("winrate_by_year")
 # returns JSON object as 
 # a dictionary
@@ -75,6 +80,8 @@ wc_participants = wc_participants.replace("USA","United States")
 df_ranking = pd.read_excel('ranking_over_time.xlsx',index_col=0)
 df_ranking.rename(columns=({'IR Iran':"Iran","Korea Republic":
                             "South Korea","Côte d'Ivoire":"Ivory Coast","USA":"United States"}),inplace=True)
+
+
 
 #Prepare input:
 curent_ranking = pd.read_excel('FIFA RANK.xlsx')
@@ -113,7 +120,43 @@ def filter_country(name):
         return "Korea Republic"
     return name
 
+def simulation(df,year,times):
+    if year in wc_participants.columns:
+        
+        teams = [t for t in wc_participants[year].values if t not in ["",np.nan]]
+        #for participants only
+        #cols = df[teams].columns.to_list()
+        
+        #for all countries
+        cols = df.columns.to_list()[1:]
 
+        #weights = df[df['year']==year][teams].iloc[0].to_list()
+        weights = df[df['year']==year].iloc[0,1:].to_list()
+        weights_with_winrate = []
+        for i in range(len(weights)):
+            if cols[i] in winrate[str(year)]:
+                weights_with_winrate.append(weights[i] + (winrate[str(year)][cols[i]])*weights[i])
+            else:
+                weights_with_winrate.append(weights[i])
+        
+        
+        result = {}
+
+        item = random.choices(cols, weights=weights_with_winrate, k=times)
+
+        count_dict = Counter(item)
+        result_df = pd.DataFrame.from_dict(count_dict,orient='index')
+        result_df.columns=['time']
+
+        result_df = result_df.loc[teams]
+        
+        total_count = result_df['time'].sum()
+        result_df['percent'] = result_df['time'].map(lambda x: (x/total_count)*100)
+        result_df = result_df.sort_values(by='percent',ascending = False)
+
+        return result_df
+    else:
+        print(f'{year} is not a World Cup event')
 
 def predict_func(home_team,away_team):
     input_team = [filter_country(home_team),filter_country(away_team),True]
@@ -292,6 +335,12 @@ def predict_top_16(round_of_16_pairs):
     #Grand Final
     grand_final_df = pd.DataFrame(grand_final_list,columns=['Team 1','Team 2'])
     
+
+    st.markdown('\n#### ========== Third place ==========')
+
+
+
+
 #     st.markdown('\n#### ========== GRAND-FINALS ==========')
     st.markdown("<h2 style='text-align: center';>&#x1F50E; GRAND-FINAL &#x1F50D;</h2>",unsafe_allow_html=True)
     st.table(grand_final_df)
@@ -465,8 +514,8 @@ img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 st.image(img_link)
 
 
-model_selection = st.radio('Please select algorithm',['Logistic Regression','Random Forest','SVC'])
-if model_selection == 'Logistic Regression':
+model_selection = st.radio('Please select algorithm',['Logistic Regrestion','Random Forest','SVC'])
+if model_selection == 'Logistic Regrestion':
     loaded_model = lr_model
     loaded_model_proba = loaded_model
 elif model_selection == 'Random Forest':
@@ -561,6 +610,7 @@ with tab3:
         else:
             st.warning('Cannot Predict, need 16 teams in total!')
     # Using "with" notation
+
 with tab4:
     simu_button = st.button('Start simulating!')
     select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
