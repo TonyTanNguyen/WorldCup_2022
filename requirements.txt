@@ -4,3 +4,4 @@ matplotlib
 networkx
 sklearn
 openpyxl
+pyxlsb
