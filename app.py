@@ -7,6 +7,15 @@ import time
 import random
 import pickle
 import networkx as nx
+
+
+from collections import Counter
+import json
+import time
+import simulation
+
+
+
 # pd.options.st.table.float_format = "{:,.3f}".format
 filename_rf = 'RF_WC_Predictor.sav'
 filename_lr = 'Logic_WC_Predictor.sav'
@@ -53,7 +62,19 @@ flags = {
     "Qatar":'🇶🇦',
 }
 
+f = open("winrate_by_year")
+# returns JSON object as 
+# a dictionary
+winrate = json.load(f)
+f.close()
 
+wc_participants = pd.read_excel('team_participate_wc_2022.xlsx',index_col=0)
+wc_participants.fillna("")
+wc_participants = wc_participants.replace("USA","United States")
+
+df_ranking = pd.read_excel('ranking_over_time.xlsx',index_col=0)
+df_ranking.rename(columns=({'IR Iran':"Iran","Korea Republic":
+                            "South Korea","Côte d'Ivoire":"Ivory Coast","USA":"United States"}),inplace=True)
 
 #Prepare input:
 curent_ranking = pd.read_excel('FIFA RANK.xlsx')
@@ -457,7 +478,7 @@ elif model_selection == 'SVC':
     loaded_model_proba = svc_model_proba
 
 st.markdown("""---""")
-tab1, tab2, tab3 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams", "Pick your top 16"])
+tab1, tab2, tab3 , tab4 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams", "Pick your top 16","Simulating Probability"])
 
 def show_flag(selected_country):
     return flags[selected_country] + selected_country
@@ -540,3 +561,12 @@ with tab3:
         else:
             st.warning('Cannot Predict, need 16 teams in total!')
     # Using "with" notation
+with tab4:
+    simu_button = st.button('Start simulating!')
+    select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
+    simulating_time = st.selectbox('How many times do you want to simulate?',[5000,10000,20000,50000,100000,1000000])
+    if simu_button:
+        
+        simu_df = simulation(df_ranking,select_simu,simulating_time)
+        for index,col in enumerate(simu_df.iloc):
+            st.write(f"{index+1} {col.name} with probability win Would Cup {col.percent}")
