@@ -630,14 +630,15 @@ with tab3:
     # Using "with" notation
 
 with tab4:
+	st.write('We generate opportunity of being World Cup champion for each participants by using probability simulating events. Choose the year of World Cup and how many times you would like to simulate!')
     simu_button = st.button('Start simulating!')
     select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
-    simulating_time = st.selectbox('How many times do you want to simulate?',[5000,10000,20000,50000,100000,1000000])
+    simulating_time = st.selectbox('How many times would you like to simulate?',[5000,10000,20000,50000,100000,1000000])
     if simu_button:
         
         simu_df = simulation(df_ranking,select_simu,simulating_time)
         for index,col in enumerate(simu_df.iloc):
-            st.write(f"{index+1} {col.name} with probability win Would Cup {col.percent}")
+            st.write(f"{index+1} {col.name} with probability: {col.percent}")
         st.table(simu_df)
         @st.cache
         def to_excel(df):
