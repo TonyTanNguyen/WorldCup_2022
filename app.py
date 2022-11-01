@@ -14,8 +14,9 @@ import json
 import pandas as pd
 import numpy as np
 import time
-import simulation
-
+#import simulation
+from io import BytesIO
+from pyxlsb import open_workbook as open_xlsb
 
 # pd.options.st.table.float_format = "{:,.3f}".format
 filename_rf = 'RF_WC_Predictor.sav'
@@ -146,12 +147,12 @@ def simulation(df,year,times):
 
         count_dict = Counter(item)
         result_df = pd.DataFrame.from_dict(count_dict,orient='index')
-        result_df.columns=['time']
+        result_df.columns=['result']
 
         result_df = result_df.loc[teams]
         
-        total_count = result_df['time'].sum()
-        result_df['percent'] = result_df['time'].map(lambda x: (x/total_count)*100)
+        total_count = result_df['result'].sum()
+        result_df['percent'] = result_df['result'].map(lambda x: (x/total_count)*100)
         result_df = result_df.sort_values(by='percent',ascending = False)
 
         return result_df
@@ -620,3 +621,21 @@ with tab4:
         simu_df = simulation(df_ranking,select_simu,simulating_time)
         for index,col in enumerate(simu_df.iloc):
             st.write(f"{index+1} {col.name} with probability win Would Cup {col.percent}")
+        st.table(simu_df)
+        @st.cache
+        def to_excel(df):
+            output = BytesIO()
+            writer = pd.ExcelWriter(output, engine='xlsxwriter')
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+            workbook = writer.book
+            worksheet = writer.sheets['Sheet1']
+            format1 = workbook.add_format({'num_format': '0.00'}) 
+            worksheet.set_column('A:A', None, format1)  
+            writer.save()
+            processed_data = output.getvalue()
+            return processed_data
+
+        simu_df = simu_df.reset_index()
+        simu_df.columns=['Team','result','percent']
+        df_xlsx = to_excel(simu_df)
+        st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
