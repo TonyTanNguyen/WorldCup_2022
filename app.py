@@ -133,15 +133,17 @@ def simulation(df,year,times):
 
         #weights = df[df['year']==year][teams].iloc[0].to_list()
         weights = df[df['year']==year].iloc[0,1:].to_list()
+        general_weight = np.median(np.array(weights))
         weights_with_winrate = []
         for i in range(len(weights)):
             if cols[i] in winrate[str(year)]:
-                weights_with_winrate.append(weights[i] + (winrate[str(year)][cols[i]])*weights[i])
+                weights_with_winrate.append(weights[i]+winrate[str(year)][cols[i]]*weights[i]/general_weight)
+
             else:
                 weights_with_winrate.append(weights[i])
         
         
-        result = {}
+        
 
         item = random.choices(cols, weights=weights_with_winrate, k=times)
 
@@ -504,14 +506,14 @@ def predict_top_16(round_of_16_pairs):
 # elif slide1 == 'Go Predicting!':
 
 streamlit_style = """
-			<style>
-			@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;700;800;900&display=swap');
+            <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;700;800;900&display=swap');
 
-			html, body, [class*="css"]  {
-			font-family: 'Inter', sans-serif;
-			}
-			</style>
-			"""
+            html, body, [class*="css"]  {
+            font-family: 'Inter', sans-serif;
+            }
+            </style>
+            """
 st.markdown(streamlit_style, unsafe_allow_html=True)
 
 hide_streamlit_style = """
@@ -519,7 +521,7 @@ hide_streamlit_style = """
             footer {visibility: hidden;}
             body {background-color: #EAFBFF;}
             #MainMenu {visibility: hidden;}
-	    .block-container.css-12oz5g7.egzxvld2 {background-color: #fff;border-radius:20px;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 15px 0 rgba(0, 0, 0, 0.19)}
+        .block-container.css-12oz5g7.egzxvld2 {background-color: #fff;border-radius:20px;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 15px 0 rgba(0, 0, 0, 0.19)}
             
             </style>
             """
@@ -552,10 +554,10 @@ def show_flag(selected_country):
 
 
 with tab1:
-	st.write("Start predicting with selected algorithm from the group stage until final match")
-	bt = st.button('Start Predicting!')
-	if bt:
-		main()
+    st.write("Start predicting with selected algorithm from the group stage until final match")
+    bt = st.button('Start Predicting!')
+    if bt:
+        main()
 
 with tab2:
     st.session_state.projects=teams
@@ -568,7 +570,7 @@ with tab2:
     if bt_2_team:
         predict_func(team1,team2)
         st.balloons()
-		
+        
 with tab3:
     with st.container():
         col1,col2,col3,col4 = st.columns(4)
@@ -630,30 +632,31 @@ with tab3:
     # Using "with" notation
 
 with tab4:
-	st.write('We generate opportunity of being World Cup champion for each participants by using probability simulating events. Choose the year of World Cup and how many times you would like to simulate!')
-	simu_button = st.button('Start simulating!')
-	select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
-	simulating_time = st.selectbox('How many times would you like to simulate?',[5000,10000,20000,50000,100000,1000000])
-	if simu_button:
+    st.write('We generate opportunity of being World Cup champion for each participants by using probability simulating events. Choose the year of World Cup and how many times you would like to simulate!')
+    simu_button = st.button('Start simulating!')
+    select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
+    simulating_time = st.selectbox('How many times would you like to simulate?',[5000,10000,20000,50000,100000,1000000])
+    if simu_button:
         
-		simu_df = simulation(df_ranking,select_simu,simulating_time)
-		for index,col in enumerate(simu_df.iloc):
-			st.write(f"{index+1} <b style='color:red'>{col.name} </b> with probability: <b style='color:blue'>{col.percent}% </b>",unsafe_allow_html=True)
-		st.table(simu_df)
-		@st.cache
-		def to_excel(df):
-			output = BytesIO()
-			writer = pd.ExcelWriter(output, engine='xlsxwriter')
-			df.to_excel(writer, index=False, sheet_name='Sheet1')
-			workbook = writer.book
-			worksheet = writer.sheets['Sheet1']
-			format1 = workbook.add_format({'num_format': '0.00'}) 
-			worksheet.set_column('A:A', None, format1)  
-			writer.save()
-			processed_data = output.getvalue()
-			return processed_data
-
-		simu_df = simu_df.reset_index()
-		simu_df.columns=['Team','result','percent']
-		df_xlsx = to_excel(simu_df)
-		st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
+        simu_df = simulation(df_ranking,select_simu,simulating_time)
+        for index,col in enumerate(simu_df.iloc):
+            st.write(f"{index+1} <b style='color:red'>{col.name} </b> with probability: <b style='color:blue'>{col.percent}% </b>",unsafe_allow_html=True)
+        st.table(simu_df)
+        st.balloons()
+        simu_df = simu_df.reset_index()
+        simu_df.columns=['Team','result','percent']
+        df_xlsx = to_excel(simu_df)
+        st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
+    @st.cache
+    def to_excel(df):
+        output = BytesIO()
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+        workbook = writer.book
+        worksheet = writer.sheets['Sheet1']
+        format1 = workbook.add_format({'num_format': '0.00'}) 
+        worksheet.set_column('A:A', None, format1)  
+        writer.save()
+        processed_data = output.getvalue()
+        return processed_data
+        
