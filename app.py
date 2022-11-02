@@ -552,7 +552,7 @@ if choose_lan:
     
     headline = st.markdown(f"<h2 style='text-align: center; color:#bd0042'>{text_to_place[0]}</h2>",unsafe_allow_html=True)
 
-    img_link = 'https://tgmresearch.com/images/Artboard_4.png'
+    img_link = 'https://tgmresearch.com/images/Artboard_3.png'
 
     st.image(img_link)
 
