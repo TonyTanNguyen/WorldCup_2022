@@ -599,32 +599,32 @@ if choose_lan:
         with st.container():
             col1,col2,col3,col4 = st.columns(4)
             with col1:
-                groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
+                groupA_sel = st.multiselect(f'{text_to_place[13]} A',groupA,max_selections = 2 , format_func = show_flag)
                 # groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
             with col2:
-                groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
+                groupB_sel = st.multiselect(f'{text_to_place[13]} B',groupB,max_selections = 2, format_func = show_flag)
                 # groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
             with col3:
-                groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
+                groupC_sel = st.multiselect(f'{text_to_place[13]} C',groupC,max_selections = 2, format_func = show_flag)
                 # groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
             with col4:
-                groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
+                groupD_sel = st.multiselect(f'{text_to_place[13]} D',groupD,max_selections = 2, format_func = show_flag)
                 # groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
 
         with st.container():
             col5,col6,col7,col8 = st.columns(4)
             with col5:
                 # groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
-                groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
+                groupE_sel = st.multiselect(f'{text_to_place[13]} E',groupE,max_selections = 2, format_func = show_flag)
             with col6:
                 # groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
-                groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
+                groupF_sel = st.multiselect(f'{text_to_place[13]} F',groupF,max_selections = 2, format_func = show_flag)
             with col7:
                 # groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
-                groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
+                groupG_sel = st.multiselect(f'{text_to_place[13]} G',groupG,max_selections = 2, format_func = show_flag)
             with col8:
                 # groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
-                groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
+                groupH_sel = st.multiselect(f'{text_to_place[13]} H',groupH,max_selections = 2, format_func = show_flag)
 
 
         tab3_button  = st.button(text_to_place[7],key = 'dsfjksdkf')
