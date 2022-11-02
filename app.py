@@ -180,8 +180,10 @@ def predict_func(home_team,away_team):
     probality = loaded_model_proba.predict_proba(input_for_predict)[0]
     probality2 = loaded_model_proba.predict_proba(input_for_predict2)[0]
 
+    check = False
     if class_result == class_result2:
         if probality[0] > probality2[0]:
+            check= True
             probality = probality2
             home_team,away_team = away_team,home_team
 
@@ -192,8 +194,11 @@ def predict_func(home_team,away_team):
 
     probality_output_text = str(round(probality_output*100,3)) + '%'
     team_win = home_team if class_result else away_team
-    result = [3,0,probality_output] if class_result else [0,3,probality_output]
-    
+    if check == False:
+        result = [3,0,probality_output] if class_result else [0,3,probality_output]
+    else:
+        result = [0,3,probality_output] if class_result else [3,0,probality_output]
+
 #     st.markdown(f"Group {group_name}:")
     st.write(f"<b style='color:red'> {flags[home_team]}{home_team}</b> :soccer: <b style='color:red'>{flags[away_team]}{away_team}</b>: <b style='color:blue'>{flags[team_win]}{team_win}</b> wins with probability <b>{probality_output_text}</b>",unsafe_allow_html=True)
 #     st.markdown("========================================================\n")
