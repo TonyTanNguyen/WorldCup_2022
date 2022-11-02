@@ -590,7 +590,7 @@ if choose_lan:
                 st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
         team1 = st.selectbox(text_to_place[9],st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
         team2 = st.selectbox(text_to_place[10],st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
-        bt_2_team = st.button("Predict!")
+        bt_2_team = st.button(text_to_place[11])
         if bt_2_team:
             predict_func(team1,team2)
             st.balloons()
