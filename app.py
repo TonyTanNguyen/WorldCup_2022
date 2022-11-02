@@ -34,7 +34,7 @@ def filter_content(df):
     for i in df.columns:
         df[i] = df[i].str.replace('\s+$|^\s+','',regex=True)
     return df
-lan = pd.read_excel('/Users/tannguyen/Desktop/Tasks/Python/depp/Predict_WC/languages.xlsx')
+lan = pd.read_excel('languages.xlsx')
 new_lan_df = filter_content(lan)
 text_to_place = new_lan_df['English'].to_list()
 
