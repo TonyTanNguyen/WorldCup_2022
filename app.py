@@ -644,7 +644,7 @@ with tab4:
         writer.save()
         processed_data = output.getvalue()
         return processed_data
-    st.write('We generate opportunity of being World Cup champion for each participants by using probability simulating events. Choose the year of World Cup and how many times you would like to simulate!')
+    st.write('We generate the possibility of being World Cup champion for each participant by simulating events using probability. Choose the year of the World Cup and how many times you want to simulate it!')
     simu_button = st.button('Start simulating!')
     select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
     simulating_time = st.selectbox('How many times would you like to simulate?',[5000,10000,20000,50000,100000,1000000])
