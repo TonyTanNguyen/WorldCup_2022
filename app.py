@@ -356,7 +356,7 @@ def predict_top_16(round_of_16_pairs):
     grand_final_df = pd.DataFrame(grand_final_list,columns=['Team 1','Team 2'])
     
 
-    st.markdown('\n#### ========== Third place ==========')
+    #st.markdown('\n#### ========== Third place ==========')
 
 
 
