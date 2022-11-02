@@ -30,6 +30,16 @@ svc_model = pickle.load(open(filename_svc, 'rb'))
 svc_model_proba = pickle.load(open(filename_svc_proba, 'rb'))
 
 
+def filter_content(df):
+    for i in df.columns:
+        df[i] = df[i].str.replace('\s+$|^\s+','',regex=True)
+    return df
+lan = pd.read_excel('languages.xlsx')
+new_lan_df = filter_content(lan)
+text_to_place = new_lan_df['English'].to_list()
+
+
+
 
 
 flags = {
@@ -532,137 +542,146 @@ hide_streamlit_style = """
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
-st.markdown("<h2 style='text-align: center; color:#bd0042'>FIFA WORLD CUP 2022 PREDICTOR</h2>",unsafe_allow_html=True)
 
-img_link = 'https://tgmresearch.com/images/Artboard_4.png'
+c1,c2,c3,c4 = st.columns(4)
+with c1:
+    choose_lan = st.selectbox('Choose a language:',new_lan_df.columns)
+if choose_lan:
+    text_to_place = new_lan_df[choose_lan].to_list()
+    
+    
+    headline = st.markdown(f"<h2 style='text-align: center; color:#bd0042'>{text_to_place[0]}</h2>",unsafe_allow_html=True)
 
-st.image(img_link)
+    img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 
+    st.image(img_link)
 
-model_selection = st.radio('Please select algorithm',['Logistic Regrestion','Random Forest','SVC'])
-if model_selection == 'Logistic Regrestion':
-    loaded_model = lr_model
-    loaded_model_proba = loaded_model
-elif model_selection == 'Random Forest':
-    loaded_model = rf_model
-    loaded_model_proba = rf_model 
+    
 
-elif model_selection == 'SVC':
-    loaded_model = svc_model
-    loaded_model_proba = svc_model_proba
+    model_selection = st.radio(text_to_place[1],[text_to_place[2],text_to_place[3],text_to_place[4]])
+    if model_selection == text_to_place[2]:
+        loaded_model = lr_model
+        loaded_model_proba = loaded_model
+    elif model_selection == text_to_place[3]:
+        loaded_model = rf_model
+        loaded_model_proba = rf_model 
 
-st.markdown("""---""")
-tab1, tab2, tab3 , tab4 = st.tabs(["Full FIFA World Cup 2022 Predicting", "Predict between 2 teams", "Pick your top 16","Simulating Probability"])
+    elif model_selection == text_to_place[4]:
+        loaded_model = svc_model
+        loaded_model_proba = svc_model_proba
 
-def show_flag(selected_country):
-    return flags[selected_country] + selected_country
+    st.markdown("""---""")
+    tab1, tab2, tab3 , tab4 = st.tabs([text_to_place[5], text_to_place[8], text_to_place[12],text_to_place[24]])
 
-
-with tab1:
-    st.write("Start predicting with selected algorithm from the group stage until final match")
-    bt = st.button('Start Predicting!')
-    if bt:
-        main()
-
-with tab2:
-    st.session_state.projects=teams
-    def submit_delete_project():
-        if st.session_state['selected1'] == st.session_state['selected2']:
-            st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
-    team1 = st.selectbox("Select Team 1",st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
-    team2 = st.selectbox("Select Team 2",st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
-    bt_2_team = st.button("Predict!")
-    if bt_2_team:
-        predict_func(team1,team2)
-        st.balloons()
-        
-with tab3:
-    with st.container():
-        col1,col2,col3,col4 = st.columns(4)
-        with col1:
-            groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
-            # groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
-        with col2:
-            groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
-            # groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
-        with col3:
-            groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
-            # groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
-        with col4:
-            groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
-            # groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
-
-    with st.container():
-        col5,col6,col7,col8 = st.columns(4)
-        with col5:
-            # groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
-            groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
-        with col6:
-            # groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
-            groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
-        with col7:
-            # groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
-            groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
-        with col8:
-            # groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
-            groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
+    def show_flag(selected_country):
+        return flags[selected_country] + selected_country
 
 
-    tab3_button  = st.button('Start Predicting!',key = 'dsfjksdkf')
-    check_bt = st.button('Check Line up')
-    if check_bt:
-        check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
-        if check_if_ok == 16:
-            teams_input = [[groupA_sel[0],groupB_sel[1]],[groupB_sel[0],groupA_sel[1]],[groupC_sel[0],groupD_sel[1]],[groupD_sel[0],groupC_sel[1]],[groupE_sel[0],groupF_sel[1]],[groupF_sel[0],groupE_sel[1]],[groupG_sel[0],groupH_sel[1]],[groupH_sel[0],groupG_sel[1]]]
-            round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
-            round_of_16_matches_df['Team 1'] = round_of_16_matches_df['Team 1'].map(lambda x: flags[x] + x)
-            round_of_16_matches_df['Team 2'] = round_of_16_matches_df['Team 2'].map(lambda x: flags[x] + x)
-            round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
-            st.table(round_of_16_matches_df)
-        else:
-            st.warning('Need 16 teams in total!')
-    if tab3_button:
-        check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
-        if check_if_ok == 16:
-            # round_of_16_pairs_b = [[[groupA_sel[0],groupB_sel[1]]],[[groupA_sel[1],groupB_sel[0]]],[[groupC_sel[0],groupD_sel[1]]],[[groupC_sel[1],groupD_sel[0]]],[[groupE_sel[0],groupF_sel[1]]],[[groupE_sel[1],groupF_sel[0]]],[[groupG_sel[0],groupH_sel[1]]],[[groupG_sel[1],groupH_sel[0]]]]
-            round_of_16_pairs_b = [[[groupA_sel[0],groupA_sel[1]]],[[groupB_sel[0],groupB_sel[1]]],[[groupC_sel[0],groupC_sel[1]]],[[groupD_sel[0],groupD_sel[1]]],[[groupE_sel[0],groupE_sel[1]]],[[groupF_sel[0],groupF_sel[1]]],[[groupG_sel[0],groupG_sel[1]]],[[groupH_sel[0],groupH_sel[1]]]]
+    with tab1:
+        st.write(text_to_place[6])
+        bt = st.button(text_to_place[7])
+        if bt:
+            main()
 
-        # round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
-        # round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
-            predict_top_16(round_of_16_pairs_b)
-        
+    with tab2:
+        st.session_state.projects=teams
+        def submit_delete_project():
+            if st.session_state['selected1'] == st.session_state['selected2']:
+                st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
+        team1 = st.selectbox(text_to_place[9],st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
+        team2 = st.selectbox(text_to_place[10],st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
+        bt_2_team = st.button("Predict!")
+        if bt_2_team:
+            predict_func(team1,team2)
             st.balloons()
-        else:
-            st.warning('Cannot Predict, need 16 teams in total!')
-    # Using "with" notation
+            
+    with tab3:
+        with st.container():
+            col1,col2,col3,col4 = st.columns(4)
+            with col1:
+                groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
+                # groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
+            with col2:
+                groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
+                # groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
+            with col3:
+                groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
+                # groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
+            with col4:
+                groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
+                # groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
 
-with tab4:
-    #@st.cache
-    def to_excel(df):
-        output = BytesIO()
-        writer = pd.ExcelWriter(output, engine='xlsxwriter')
-        df.to_excel(writer, index=False, sheet_name='Sheet1')
-        workbook = writer.book
-        worksheet = writer.sheets['Sheet1']
-        format1 = workbook.add_format({'num_format': '0.00'}) 
-        worksheet.set_column('A:A', None, format1)  
-        writer.save()
-        processed_data = output.getvalue()
-        return processed_data
-    st.write('We generate the possibility of being World Cup champion for each participant by simulating events using probability. Choose the year of the World Cup and how many times you want to simulate it!')
-    simu_button = st.button('Start simulating!')
-    select_simu = st.selectbox('Select year:',[1994,1998,2002,2006,2010,2014,2018,2022])
-    simulating_time = st.selectbox('How many times would you like to simulate?',[5000,10000,20000,50000,100000,1000000])
-    if simu_button:
-        
-        simu_df = simulation(df_ranking,select_simu,simulating_time)
-        for index,col in enumerate(simu_df.iloc):
-            st.write(f"{index+1} <b style='color:red'>{col.name} </b> with probability: <b style='color:blue'>{col.percent}% </b>",unsafe_allow_html=True)
-        st.table(simu_df)
-        st.balloons()
-        simu_df = simu_df.reset_index()
-        simu_df.columns=['Team','result','percent']
-        df_xlsx = to_excel(simu_df)
-        st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
+        with st.container():
+            col5,col6,col7,col8 = st.columns(4)
+            with col5:
+                # groupA_sel = st.multiselect('Group A',groupA,max_selections = 2 , format_func = show_flag)
+                groupE_sel = st.multiselect('Group E',groupE,max_selections = 2, format_func = show_flag)
+            with col6:
+                # groupB_sel = st.multiselect('Group B',groupB,max_selections = 2, format_func = show_flag)
+                groupF_sel = st.multiselect('Group F',groupF,max_selections = 2, format_func = show_flag)
+            with col7:
+                # groupC_sel = st.multiselect('Group C',groupC,max_selections = 2, format_func = show_flag)
+                groupG_sel = st.multiselect('Group G',groupG,max_selections = 2, format_func = show_flag)
+            with col8:
+                # groupD_sel = st.multiselect('Group D',groupD,max_selections = 2, format_func = show_flag)
+                groupH_sel = st.multiselect('Group H',groupH,max_selections = 2, format_func = show_flag)
 
-        
+
+        tab3_button  = st.button(text_to_place[7],key = 'dsfjksdkf')
+        check_bt = st.button(text_to_place[23],key = 'dsfdsgadfds')
+        if check_bt:
+            check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
+            if check_if_ok == 16:
+                teams_input = [[groupA_sel[0],groupB_sel[1]],[groupB_sel[0],groupA_sel[1]],[groupC_sel[0],groupD_sel[1]],[groupD_sel[0],groupC_sel[1]],[groupE_sel[0],groupF_sel[1]],[groupF_sel[0],groupE_sel[1]],[groupG_sel[0],groupH_sel[1]],[groupH_sel[0],groupG_sel[1]]]
+                round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
+                round_of_16_matches_df['Team 1'] = round_of_16_matches_df['Team 1'].map(lambda x: flags[x] + x)
+                round_of_16_matches_df['Team 2'] = round_of_16_matches_df['Team 2'].map(lambda x: flags[x] + x)
+                round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
+                st.table(round_of_16_matches_df)
+            else:
+                st.warning('Need 16 teams in total!')
+        if tab3_button:
+            check_if_ok = len(groupA_sel+groupB_sel+groupC_sel+groupD_sel+groupE_sel+groupF_sel+groupG_sel+groupH_sel)
+            if check_if_ok == 16:
+                # round_of_16_pairs_b = [[[groupA_sel[0],groupB_sel[1]]],[[groupA_sel[1],groupB_sel[0]]],[[groupC_sel[0],groupD_sel[1]]],[[groupC_sel[1],groupD_sel[0]]],[[groupE_sel[0],groupF_sel[1]]],[[groupE_sel[1],groupF_sel[0]]],[[groupG_sel[0],groupH_sel[1]]],[[groupG_sel[1],groupH_sel[0]]]]
+                round_of_16_pairs_b = [[[groupA_sel[0],groupA_sel[1]]],[[groupB_sel[0],groupB_sel[1]]],[[groupC_sel[0],groupC_sel[1]]],[[groupD_sel[0],groupD_sel[1]]],[[groupE_sel[0],groupE_sel[1]]],[[groupF_sel[0],groupF_sel[1]]],[[groupG_sel[0],groupG_sel[1]]],[[groupH_sel[0],groupH_sel[1]]]]
+
+            # round_of_16_matches_df = pd.DataFrame(teams_input, columns=['Team 1','Team 2']).reset_index()
+            # round_of_16_matches_df['Match'] = round_of_16_matches_df.pop('index')+1
+                predict_top_16(round_of_16_pairs_b)
+            
+                st.balloons()
+            else:
+                st.warning('Cannot Predict, need 16 teams in total!')
+        # Using "with" notation
+
+    with tab4:
+        #@st.cache
+        def to_excel(df):
+            output = BytesIO()
+            writer = pd.ExcelWriter(output, engine='xlsxwriter')
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+            workbook = writer.book
+            worksheet = writer.sheets['Sheet1']
+            format1 = workbook.add_format({'num_format': '0.00'}) 
+            worksheet.set_column('A:A', None, format1)  
+            writer.save()
+            processed_data = output.getvalue()
+            return processed_data
+        st.write(text_to_place[25])
+        simu_button = st.button(text_to_place[26],key='aaaaa')
+        select_simu = st.selectbox(text_to_place[27],[1994,1998,2002,2006,2010,2014,2018,2022])
+        simulating_time = st.selectbox(text_to_place[28],[5000,10000,20000,50000,100000,1000000])
+        if simu_button:
+            
+            simu_df = simulation(df_ranking,select_simu,simulating_time)
+            for index,col in enumerate(simu_df.iloc):
+                st.write(f"{index+1} <b style='color:red'>{col.name} </b> with probability: <b style='color:blue'>{col.percent}% </b>",unsafe_allow_html=True)
+            st.table(simu_df)
+            st.balloons()
+            simu_df = simu_df.reset_index()
+            simu_df.columns=['Team','result','percent']
+            df_xlsx = to_excel(simu_df)
+            st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
+
+            
