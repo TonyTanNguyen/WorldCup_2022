@@ -34,7 +34,7 @@ def filter_content(df):
     for i in df.columns:
         df[i] = df[i].str.replace('\s+$|^\s+','',regex=True)
     return df
-lan = pd.read_excel('languages.xlsx')
+lan = pd.read_excel('/Users/tannguyen/Desktop/Tasks/Python/depp/Predict_WC/languages.xlsx')
 new_lan_df = filter_content(lan)
 text_to_place = new_lan_df['English'].to_list()
 
@@ -552,7 +552,7 @@ if choose_lan:
     
     headline = st.markdown(f"<h2 style='text-align: center; color:#bd0042'>{text_to_place[0]}</h2>",unsafe_allow_html=True)
 
-    img_link = 'https://tgmresearch.com/images/Artboard_3.png'
+    img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 
     st.image(img_link)
 
@@ -579,7 +579,7 @@ if choose_lan:
 
     with tab1:
         st.write(text_to_place[6])
-        bt = st.button(text_to_place[7])
+        bt = st.button(text_to_place[7], key = 'sdkohfjsfjas')
         if bt:
             main()
 
@@ -590,7 +590,7 @@ if choose_lan:
                 st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
         team1 = st.selectbox(text_to_place[9],st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
         team2 = st.selectbox(text_to_place[10],st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
-        bt_2_team = st.button(text_to_place[11])
+        bt_2_team = st.button(text_to_place[11],key = 'dsfsdddddd')
         if bt_2_team:
             predict_func(team1,team2)
             st.balloons()
