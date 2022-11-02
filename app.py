@@ -539,7 +539,7 @@ img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 st.image(img_link)
 
 
-model_selection = st.radio('Please select algorithm',['Logistic Regrestion','Random Forest','SVC'])
+model_selection = st.radio('Please select algorithm',['Logistic Regression','Random Forest','SVC'])
 if model_selection == 'Logistic Regrestion':
     loaded_model = lr_model
     loaded_model_proba = loaded_model
