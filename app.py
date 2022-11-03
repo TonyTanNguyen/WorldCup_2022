@@ -400,8 +400,8 @@ def predict_top_16(round_of_16_pairs):
     st.markdown('\n\n\n\n======= GRAND-FINALS RESULT IN TABLE ========')
     st.table(grand_final_df.reset_index(drop=True))
 
-#     st.markdown('\n\n\n\n****======= FIFA WORLD CUP 2022 RESULT=======****')
-    st.markdown("<h2 style='text-align: center; color:red'>FIFA WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
+#     st.markdown('\n\n\n\n****======= WORLD CUP 2022 RESULT=======****')
+    st.markdown("<h2 style='text-align: center; color:red'>WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
     st.markdown(f"### :trophy: {flags[champion]}{champion}")
     st.markdown(f"### 🥈 {flags[runners_up]}{runners_up}")
 
@@ -481,7 +481,7 @@ def predict_top_16(round_of_16_pairs):
 
 
 #================================== UI =========================================
-# st.markdown("<h1 style='text-align: center; color: red;'>Predicting FIFA World Cup 2022 using Machine Learning</h1>", unsafe_allow_html=True)
+# st.markdown("<h1 style='text-align: center; color: red;'>Predicting World Cup 2022 using Machine Learning</h1>", unsafe_allow_html=True)
 
 # slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
 # slide2 =  st.sidebar.button('Go Predicting!')
