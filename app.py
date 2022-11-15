@@ -18,6 +18,8 @@ import time
 from io import BytesIO
 from pyxlsb import open_workbook as open_xlsb
 
+exec(open("functions.py").read())
+
 # pd.options.st.table.float_format = "{:,.3f}".format
 filename_rf = 'RF_WC_Predictor.sav'
 filename_lr = 'Logic_WC_Predictor.sav'
@@ -126,6 +128,10 @@ wc_22_matches_groupstage.rename(columns=({'country1': 'Country_1','coutry2':'Cou
 
 
 #=============== Functions ================
+
+
+
+
 def filter_country(name):
     if name =='South Korea':
         return "Korea Republic"
@@ -214,6 +220,14 @@ def predict_func(home_team,away_team):
 #     st.markdown("========================================================\n")
 #     time.sleep(0.1)
     return result
+
+
+
+
+
+#==============================END FUNCTIONS =================================
+
+
 def main():
     currentgroup = ''
     group_stage_result = {}
@@ -400,8 +414,8 @@ def predict_top_16(round_of_16_pairs):
     st.markdown('\n\n\n\n======= GRAND-FINALS RESULT IN TABLE ========')
     st.table(grand_final_df.reset_index(drop=True))
 
-#     st.markdown('\n\n\n\n****======= WORLD CUP 2022 RESULT=======****')
-    st.markdown("<h2 style='text-align: center; color:red'>WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
+#     st.markdown('\n\n\n\n****======= FIFA WORLD CUP 2022 RESULT=======****')
+    st.markdown("<h2 style='text-align: center; color:red'>FIFA WORLD CUP 2022 CHAMPION</h2>",unsafe_allow_html=True)
     st.markdown(f"### :trophy: {flags[champion]}{champion}")
     st.markdown(f"### 🥈 {flags[runners_up]}{runners_up}")
 
@@ -481,7 +495,7 @@ def predict_top_16(round_of_16_pairs):
 
 
 #================================== UI =========================================
-# st.markdown("<h1 style='text-align: center; color: red;'>Predicting World Cup 2022 using Machine Learning</h1>", unsafe_allow_html=True)
+# st.markdown("<h1 style='text-align: center; color: red;'>Predicting FIFA World Cup 2022 using Machine Learning</h1>", unsafe_allow_html=True)
 
 # slide1 =  st.sidebar.radio('',['About the model','Go Predicting!'])
 # slide2 =  st.sidebar.button('Go Predicting!')
@@ -670,18 +684,91 @@ if choose_lan:
             return processed_data
         st.write(text_to_place[25])
         simu_button = st.button(text_to_place[26],key='aaaaa')
-        select_simu = st.selectbox(text_to_place[27],[1994,1998,2002,2006,2010,2014,2018,2022])
-        simulating_time = st.selectbox(text_to_place[28],[5000,10000,20000,50000,100000,1000000])
         if simu_button:
             
-            simu_df = simulation(df_ranking,select_simu,simulating_time)
-            for index,col in enumerate(simu_df.iloc):
-                st.write(f"{index+1} <b style='color:red'>{col.name} </b> with probability: <b style='color:blue'>{col.percent}% </b>",unsafe_allow_html=True)
-            st.table(simu_df)
-            st.balloons()
-            simu_df = simu_df.reset_index()
-            simu_df.columns=['Team','result','percent']
-            df_xlsx = to_excel(simu_df)
-            st.download_button(label='📥 Download Current Result',data=df_xlsx,file_name= f'{select_simu}_{simulating_time}_simulation_times_output.xlsx')
+            country_proba  = dict()
+            for index, row in wc_22_matches_groupstage.iterrows():
+                contry_1 = row['Country_1']
+                contry_2 = row['Country_2']
+                if contry_1 not in country_proba:
+                    country_proba[contry_1] = 0
+                if contry_2 not in country_proba:
+                    country_proba[contry_2] = 0
+            quater_dict = country_proba.copy()
+            semi_dict = country_proba.copy()
+            final_dict = country_proba.copy()
+            champion_dict = country_proba.copy()
+            my_bar = st.progress(0)
+            time_simu = 1000
+            for i in range(time_simu):
 
-            
+                my_bar.progress(i/time_simu + 1/time_simu)
+                test_gr = wc_22_matches_groupstage.copy()
+                
+                
+                test_gr['random_num'] = [random.random() for r in range(len(test_gr))]
+                test_gr['result'] = test_gr.apply(lambda x: predict_func_to_df(x['Country_1'],x['Country_2']),axis=1)
+                test_gr['T1_win_proba'] = test_gr['result'].str.extract(r'^([^,]+)', expand = True).astype('float')
+                test_gr['T2_win_proba'] = test_gr['result'].str.extract(r',(.+),', expand = True).astype('float')
+                test_gr['Team1_win'] = test_gr.apply(lambda x: sim_teamwin(x['T1_win_proba'],x['T2_win_proba'],x['random_num']),axis=1)
+                group_order_dump = group_order.copy()
+                group_order_dump['score'] = group_order_dump['Team'].map(lambda x: result_score(test_gr)[x])
+                group_order_dump = group_order_dump.sort_values(by = ['Group','score'], ascending=[True,False])
+                
+                
+                round_of_16_dump = []
+                round_of_16 = []
+                for gr in group_order_dump['Group'].unique():
+                    dump_df = group_order_dump[group_order_dump['Group']==gr]
+                    
+                    winner_gr = dump_df['Team'].values[0]
+                    runners_up = dump_df['Team'].values[1]
+                    round_of_16_dump.append(winner_gr)
+                    round_of_16_dump.append(runners_up)
+                    country_proba[winner_gr] += 1
+                    country_proba[runners_up] += 1
+                for i in [0,4,8,12]:
+                    round_of_16.append([round_of_16_dump[i],round_of_16_dump[i+3]])
+                    round_of_16.append([round_of_16_dump[i+2],round_of_16_dump[i+1]])
+                    
+                #quater
+                quater = []
+                quater_dump = []
+                for pair in round_of_16:
+                    team_continue = predict_func_knock_out(pair[0],pair[1])
+                    quater_dump.append(team_continue)
+                    quater_dict[team_continue]+=1
+                
+                for i in [0,2,4,6]:
+                    quater.append([quater_dump[i],quater_dump[i+1]])
+                    
+                
+                #semi
+                semi = []
+                semi_dump = []
+                for pair in quater:
+                    team_continue = predict_func_knock_out(pair[0],pair[1])
+                    semi_dict[team_continue]+=1
+                    semi_dump.append(team_continue)
+                    
+                for i in [0,2]:
+                    semi.append([semi_dump[i],semi_dump[i+1]])
+                #final
+                final = []
+                for pair in semi:
+                    team_continue = predict_func_knock_out(pair[0],pair[1])
+                    final_dict[team_continue]+=1
+                    final.append(team_continue)
+                
+                champion = predict_func_knock_out(final[0],final[1])
+                champion_dict[champion] += 1
+            country_proba_df = pd.DataFrame(country_proba.items(),columns=['Team','Score'])
+            group_proba_merge = group_order.merge(country_proba_df,on='Team')
+            group_proba_merge['Percent_to_group_16'] = group_proba_merge.groupby('Group')['Score'].apply(lambda x: x/x.sum())
+            group_proba_merge['Percent_to_quater'] = group_proba_merge.apply(lambda x: cal_percent_quater(x),axis=1)
+            group_proba_merge['Percent_to_semi'] = group_proba_merge.apply(lambda x: cal_percent_semi(x),axis=1)
+            group_proba_merge['Percent_to_final'] = group_proba_merge.apply(lambda x: cal_percent_final(x),axis=1)
+            group_proba_merge['champion'] = group_proba_merge.apply(lambda x: cal_percent_cham(x),axis=1)
+            group_proba_merge = group_proba_merge.drop(columns=['Score'])
+            group_proba_merge = group_proba_merge.sort_values(by='champion',ascending=False)
+            st.dataframe(group_proba_merge)
