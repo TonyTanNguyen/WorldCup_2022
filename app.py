@@ -764,7 +764,7 @@ if choose_lan:
                 champion_dict[champion] += 1
             country_proba_df = pd.DataFrame(country_proba.items(),columns=['Team','Score'])
             group_proba_merge = group_order.merge(country_proba_df,on='Team')
-            group_proba_merge['Percent_to_group_16'] = group_proba_merge.groupby('Group')['Score'].apply(lambda x: x/x.sum())
+            group_proba_merge['Percent_to_group_16'] = group_proba_merge.groupby('Group')['Score'].apply(lambda x: x*100/x.sum())
             group_proba_merge['Percent_to_quater'] = group_proba_merge.apply(lambda x: cal_percent_quater(x),axis=1)
             group_proba_merge['Percent_to_semi'] = group_proba_merge.apply(lambda x: cal_percent_semi(x),axis=1)
             group_proba_merge['Percent_to_final'] = group_proba_merge.apply(lambda x: cal_percent_final(x),axis=1)
