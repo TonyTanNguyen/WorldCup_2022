@@ -5,3 +5,4 @@ networkx
 openpyxl
 pyxlsb
 xlsxwriter
+scikit-learn
