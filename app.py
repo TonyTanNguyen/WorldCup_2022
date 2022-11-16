@@ -6,8 +6,11 @@ import random
 import pickle
 import networkx as nx
 
+import random
 from collections import Counter
 import json
+
+# import time
 #import simulation
 from io import BytesIO
 from pyxlsb import open_workbook as open_xlsb
@@ -569,7 +572,7 @@ hide_streamlit_style = """
             #MainMenu {visibility: hidden;}
         .block-container.css-12oz5g7.egzxvld2 {background-color: #fff;border-radius:20px;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 15px 0 rgba(0, 0, 0, 0.19);padding:0rem 1rem 2rem 1rem}
         .main.css-k1vhr4.egzxvld3 {background-image: url("https://tgmresearch.com/templates/yootheme/cache/17/banner-5-17723826.webp");background-position: cover;}
-        .css-n96dn8.e8zbici2 {display: none;} 
+        .css-18ni7ap.e8zbici2 {display: none;} 
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
@@ -728,7 +731,7 @@ if choose_lan and choose_year:
             processed_data = output.getvalue()
             return processed_data
         st.write(text_to_place[25])
-        simulating_time = st.selectbox(text_to_place[28],[100,1000,2000,5000,10000])
+        simulating_time = st.selectbox(text_to_place[28],[1000,2000,5000,10000])
         simu_button = st.button(text_to_place[26],key='aaaaa')
         if simu_button:
             
