@@ -76,24 +76,28 @@ def result_score(my_df):
 
 def cal_percent_quater(col):
     try:
-        return (quater_dict[col['Team']]/country_proba[col['Team']]) * col['Percent_to_group_16']
+#         return (quater_dict[col['Team']]/country_proba[col['Team']]) * col['Percent_to_group_16']
+        return (quater_dict[col['Team']]*100/1000)
     except:
         return 0
     
 def cal_percent_semi(col):
     try:
-        return (semi_dict[col['Team']]/quater_dict[col['Team']]) * col['Percent_to_quater']
+#         return (semi_dict[col['Team']]/quater_dict[col['Team']]) * col['Percent_to_quater']
+        return (semi_dict[col['Team']]*100/1000)
     except:
         return 0 
     
 def cal_percent_final(col):
     try:
-        return (final_dict[col['Team']]/semi_dict[col['Team']]) * col['Percent_to_semi']
+#         return (final_dict[col['Team']]/semi_dict[col['Team']]) * col['Percent_to_semi']
+        return (final_dict[col['Team']]*100/1000)
     except:
         return 0  
     
 def cal_percent_cham(col):
     try:
-        return (champion_dict[col['Team']]/final_dict[col['Team']]) * col['Percent_to_final']
+        return (champion_dict[col['Team']]*100/1000)
+#         return (champion_dict[col['Team']]/final_dict[col['Team']]) * col['Percent_to_final']
     except:
-        return 0 
+        return 0  
