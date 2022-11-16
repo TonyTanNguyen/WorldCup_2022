@@ -1,12 +1,11 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+
 import random
 import pickle
 import networkx as nx
 
-import random
 from collections import Counter
 import json
 #import simulation
