@@ -729,7 +729,7 @@ if choose_lan and choose_year:
             processed_data = output.getvalue()
             return processed_data
         st.write(text_to_place[25])
-        simulating_time = st.selectbox(text_to_place[28],[1000,2000,5000,10000])
+        simulating_time = st.selectbox(text_to_place[28],[100,1000,2000,5000,10000])
         simu_button = st.button(text_to_place[26],key='aaaaa')
         if simu_button:
             
