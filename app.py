@@ -1,9 +1,7 @@
 import streamlit as st
 import pandas as pd
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import time
 import random
 import pickle
 import networkx as nx
@@ -11,9 +9,6 @@ import networkx as nx
 import random
 from collections import Counter
 import json
-import pandas as pd
-import numpy as np
-import time
 #import simulation
 from io import BytesIO
 from pyxlsb import open_workbook as open_xlsb
