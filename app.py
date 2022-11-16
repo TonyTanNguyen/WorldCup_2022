@@ -552,7 +552,7 @@ hide_streamlit_style = """
             #MainMenu {visibility: hidden;}
         .block-container.css-12oz5g7.egzxvld2 {background-color: #fff;border-radius:20px;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 15px 0 rgba(0, 0, 0, 0.19)}
         .main.css-k1vhr4.egzxvld3 {background-image: url("https://tgmresearch.com/templates/yootheme/cache/17/banner-5-17723826.webp");background-position: cover;}
-        .css-18ni7ap.e8zbici2 {display: none;}
+        .css-n96dn8.e8zbici2 {display: none;}
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
