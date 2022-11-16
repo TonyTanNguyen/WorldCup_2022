@@ -1,0 +1,49 @@
+,country1,coutry2,group,phase
+0,Russia,Saudi Arabia,A,group matches
+1,Egypt,Uruguay,A,group matches
+2,Portugal,Spain,B,group matches
+3,Morocco,Iran,B,group matches
+4,France,Australia,C,group matches
+5,Peru,Denmark,C,group matches
+6,Argentina,Iceland,D,group matches
+7,Croatia,Nigeria,D,group matches
+8,Brazil,Switzerland,E,group matches
+9,Costa Rica,Serbia,E,group matches
+10,Germany,Mexico,F,group matches
+11,Sweden,Korea Republic,F,group matches
+12,Belgium,Panama,G,group matches
+13,Tunisia,England,G,group matches
+14,Poland,Senegal,H,group matches
+15,Colombia,Japan,H,group matches
+16,Russia,Egypt,A,group matches
+17,Uruguay,Saudi Arabia,A,group matches
+18,Portugal,Morocco,B,group matches
+19,Iran,Spain,B,group matches
+20,France,Peru,C,group matches
+21,Denmark,Australia,C,group matches
+22,Argentina,Croatia,D,group matches
+23,Nigeria,Iceland,D,group matches
+24,Brazil,Costa Rica,E,group matches
+25,Serbia,Switzerland,E,group matches
+26,Germany,Sweden,F,group matches
+27,Korea Republic,Mexico,F,group matches
+28,Belgium,Tunisia,G,group matches
+29,England,Panama,G,group matches
+30,Poland,Colombia,H,group matches
+31,Japan,Senegal,H,group matches
+32,Uruguay,Russia,A,group matches
+33,Saudi Arabia,Egypt,A,group matches
+34,Iran,Portugal,B,group matches
+35,Spain,Morocco,B,group matches
+36,Denmark,France,C,group matches
+37,Australia,Peru,C,group matches
+38,Nigeria,Argentina,D,group matches
+39,Iceland,Croatia,D,group matches
+40,Serbia,Brazil,E,group matches
+41,Switzerland,Costa Rica,E,group matches
+42,Korea Republic,Germany,F,group matches
+43,Mexico,Sweden,F,group matches
+44,England,Belgium,G,group matches
+45,Panama,Tunisia,G,group matches
+46,Japan,Poland,H,group matches
+47,Senegal,Colombia,H,group matches
