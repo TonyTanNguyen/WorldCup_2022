@@ -77,6 +77,15 @@ flags = {
     "Wales":'🏴󠁧󠁢󠁷󠁬󠁳󠁿',
     "Ghana":'🇬🇭',
     "Qatar":'🇶🇦',
+    'Russia':'🇷🇺',
+    'Egypt':'🇪🇬',
+    'Peru':'🇵🇪',
+    'Iceland':'🇮🇸',
+    'Nigeria':'🇳🇬',
+    'Sweden':'🇸🇪',
+    'Korea Republic':'🇰🇷',
+    'Panama':'🇵🇦',
+    'Colombia':'🇨🇴',
 }
 
 
@@ -99,30 +108,44 @@ df_ranking.rename(columns=({'IR Iran':"Iran","Korea Republic":
 #Prepare input:
 curent_ranking = pd.read_excel('FIFA RANK.xlsx')
 current_ranking_dict = curent_ranking.set_index(keys='Country')['Rank'].to_dict()
-wc_22_matches = pd.read_csv('matchs-schudule.csv',sep=';')
-group_order = pd.read_csv('Qatar2022-teams.csv',sep=';')
-group_order.columns = ['Team','Group']
-teams = group_order['Team'].sort_values(ascending=True).to_list()
 
-groupA = group_order[group_order['Group'] == 'A']['Team'].to_list()
-groupB = group_order[group_order['Group'] == 'B']['Team'].to_list()
-groupC = group_order[group_order['Group'] == 'C']['Team'].to_list()
-groupD = group_order[group_order['Group'] == 'D']['Team'].to_list()
-groupE = group_order[group_order['Group'] == 'E']['Team'].to_list()
-groupF = group_order[group_order['Group'] == 'F']['Team'].to_list()
-groupG = group_order[group_order['Group'] == 'G']['Team'].to_list()
-groupH = group_order[group_order['Group'] == 'H']['Team'].to_list()
+wc22_matches = pd.read_csv('matchs-schudule.csv',sep=';')
+group_order_wc22 = pd.read_csv('Qatar2022-teams.csv',sep=';')
 
-wc_22_matches_groupstage = wc_22_matches[wc_22_matches['phase']=='group matches']
+wc18_matches = pd.read_csv('/Users/tannguyen/Desktop/Tasks/Python/depp/data/worldcup 2018 schedule.csv')
+group_order_wc18 = pd.read_csv('/Users/tannguyen/Desktop/Tasks/Python/depp/data/wc2018 group.csv')
 
-#add group name
-wc_22_matches_groupstage = pd.merge(wc_22_matches_groupstage,group_order,left_on = 'country1',right_on = 'Team')
+year_choose_dict = {
+    2018:[wc18_matches,group_order_wc18],
+    2022:[wc22_matches,group_order_wc22],
+}
+# wc_22_matches = year_choose_dict[2022][0].copy()
+# group_order = year_choose_dict[2022][1].copy()
 
-#Sort by A-Z on Group
-wc_22_matches_groupstage = wc_22_matches_groupstage.sort_values(by='Group')
 
-#rename
-wc_22_matches_groupstage.rename(columns=({'country1': 'Country_1','coutry2':'Country_2'}),inplace=True)
+
+# group_order.columns = ['Team','Group']
+# teams = group_order['Team'].sort_values(ascending=True).to_list()
+
+# groupA = group_order[group_order['Group'] == 'A']['Team'].to_list()
+# groupB = group_order[group_order['Group'] == 'B']['Team'].to_list()
+# groupC = group_order[group_order['Group'] == 'C']['Team'].to_list()
+# groupD = group_order[group_order['Group'] == 'D']['Team'].to_list()
+# groupE = group_order[group_order['Group'] == 'E']['Team'].to_list()
+# groupF = group_order[group_order['Group'] == 'F']['Team'].to_list()
+# groupG = group_order[group_order['Group'] == 'G']['Team'].to_list()
+# groupH = group_order[group_order['Group'] == 'H']['Team'].to_list()
+
+# wc_22_matches_groupstage = wc_22_matches[wc_22_matches['phase']=='group matches']
+
+# #add group name
+# wc_22_matches_groupstage = pd.merge(wc_22_matches_groupstage,group_order,left_on = 'country1',right_on = 'Team')
+
+# #Sort by A-Z on Group
+# wc_22_matches_groupstage = wc_22_matches_groupstage.sort_values(by='Group')
+
+# #rename
+# wc_22_matches_groupstage.rename(columns=({'country1': 'Country_1','coutry2':'Country_2'}),inplace=True)
 
 
 
@@ -552,7 +575,7 @@ hide_streamlit_style = """
             #MainMenu {visibility: hidden;}
         .block-container.css-12oz5g7.egzxvld2 {background-color: #fff;border-radius:20px;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 15px 0 rgba(0, 0, 0, 0.19);padding:0rem 1rem 2rem 1rem}
         .main.css-k1vhr4.egzxvld3 {background-image: url("https://tgmresearch.com/templates/yootheme/cache/17/banner-5-17723826.webp");background-position: cover;}
-        .css-n96dn8.e8zbici2 {display: none;}
+        .css-18ni7ap.e8zbici2 {display: none;} 
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
@@ -561,7 +584,35 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 c1,c2,c3,c4 = st.columns(4)
 with c1:
     choose_lan = st.selectbox('Choose a language:',new_lan_df.columns)
-if choose_lan:
+    choose_year = st.selectbox('Choose world cup year:',[2018,2022])
+
+
+if choose_lan and choose_year:
+    
+    wc_22_matches = year_choose_dict[choose_year][0].copy()
+    group_order = year_choose_dict[choose_year][1].copy()
+    group_order.columns = ['Team','Group']
+    teams = group_order['Team'].sort_values(ascending=True).to_list()
+
+    groupA = group_order[group_order['Group'] == 'A']['Team'].to_list()
+    groupB = group_order[group_order['Group'] == 'B']['Team'].to_list()
+    groupC = group_order[group_order['Group'] == 'C']['Team'].to_list()
+    groupD = group_order[group_order['Group'] == 'D']['Team'].to_list()
+    groupE = group_order[group_order['Group'] == 'E']['Team'].to_list()
+    groupF = group_order[group_order['Group'] == 'F']['Team'].to_list()
+    groupG = group_order[group_order['Group'] == 'G']['Team'].to_list()
+    groupH = group_order[group_order['Group'] == 'H']['Team'].to_list()
+
+    wc_22_matches_groupstage = wc_22_matches[wc_22_matches['phase']=='group matches']
+
+    #add group name
+    wc_22_matches_groupstage = pd.merge(wc_22_matches_groupstage,group_order,left_on = 'country1',right_on = 'Team')
+
+    #Sort by A-Z on Group
+    wc_22_matches_groupstage = wc_22_matches_groupstage.sort_values(by='Group')
+
+    #rename
+    wc_22_matches_groupstage.rename(columns=({'country1': 'Country_1','coutry2':'Country_2'}),inplace=True)
     text_to_place = new_lan_df[choose_lan].to_list()
     
     
@@ -571,7 +622,6 @@ if choose_lan:
 
     st.image(img_link)
 
-    
 
     model_selection = st.radio(text_to_place[1],[text_to_place[2],text_to_place[3],text_to_place[4]])
     if model_selection == text_to_place[2]:
@@ -684,6 +734,7 @@ if choose_lan:
             processed_data = output.getvalue()
             return processed_data
         st.write(text_to_place[25])
+        simulating_time = st.selectbox(text_to_place[28],[1000,2000,5000,10000])
         simu_button = st.button(text_to_place[26],key='aaaaa')
         if simu_button:
             
@@ -700,7 +751,7 @@ if choose_lan:
             final_dict = country_proba.copy()
             champion_dict = country_proba.copy()
             my_bar = st.progress(0)
-            time_simu = 1000
+            time_simu = simulating_time
             for i in range(time_simu):
 
                 my_bar.progress(i/time_simu + 1/time_simu)
@@ -765,12 +816,11 @@ if choose_lan:
                 champion_dict[champion] += 1
             country_proba_df = pd.DataFrame(country_proba.items(),columns=['Team','Score'])
             group_proba_merge = group_order.merge(country_proba_df,on='Team')
-#             group_proba_merge['Percent_to_group_16'] = group_proba_merge.groupby('Group')['Score'].apply(lambda x: x*100/x.sum())
-            group_proba_merge['Percent_to_group_16'] = group_proba_merge['Score'].apply(lambda x: x*100/1000)
-            group_proba_merge['Percent_to_quater'] = group_proba_merge.apply(lambda x: cal_percent_quater(x),axis=1)
-            group_proba_merge['Percent_to_semi'] = group_proba_merge.apply(lambda x: cal_percent_semi(x),axis=1)
-            group_proba_merge['Percent_to_final'] = group_proba_merge.apply(lambda x: cal_percent_final(x),axis=1)
-            group_proba_merge['champion'] = group_proba_merge.apply(lambda x: cal_percent_cham(x),axis=1)
+            group_proba_merge['Percent_to_group_16'] = group_proba_merge['Score'].apply(lambda x: x*100/simulating_time)
+            group_proba_merge['Percent_to_quater'] = group_proba_merge.apply(lambda x: cal_percent_quater(x,simulating_time),axis=1)
+            group_proba_merge['Percent_to_semi'] = group_proba_merge.apply(lambda x: cal_percent_semi(x,simulating_time),axis=1)
+            group_proba_merge['Percent_to_final'] = group_proba_merge.apply(lambda x: cal_percent_final(x,simulating_time),axis=1)
+            group_proba_merge['champion'] = group_proba_merge.apply(lambda x: cal_percent_cham(x,simulating_time),axis=1)
             group_proba_merge = group_proba_merge.drop(columns=['Score'])
             group_proba_merge = group_proba_merge.sort_values(by='champion',ascending=False)
             st.dataframe(group_proba_merge)
