@@ -6,3 +6,4 @@ sklearn
 openpyxl
 pyxlsb
 xlsxwriter
+pickle
