@@ -112,8 +112,8 @@ current_ranking_dict = curent_ranking.set_index(keys='Country')['Rank'].to_dict(
 wc22_matches = pd.read_csv('matchs-schudule.csv',sep=';')
 group_order_wc22 = pd.read_csv('Qatar2022-teams.csv',sep=';')
 
-wc18_matches = pd.read_csv('/Users/tannguyen/Desktop/Tasks/Python/depp/data/worldcup 2018 schedule.csv')
-group_order_wc18 = pd.read_csv('/Users/tannguyen/Desktop/Tasks/Python/depp/data/wc2018 group.csv')
+wc18_matches = pd.read_csv('worldcup 2018 schedule.csv')
+group_order_wc18 = pd.read_csv('wc2018 group.csv')
 
 year_choose_dict = {
     2018:[wc18_matches,group_order_wc18],
