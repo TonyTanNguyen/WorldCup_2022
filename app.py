@@ -326,11 +326,11 @@ def predict_top_16(round_of_16_pairs):
 
     dump_semi = []
 
-    for index, row in round_of_16_matches_df.iterrows():
+    for index in [0,2,1,3,4,6,5,7]:
 
-        st.markdown(f"\n======= Match {row['Match']} =======")
-        output_result = predict_func(row['Team 1'], row['Team 2'])
-        win_team = row['Team 1'] if output_result[0]==3 else row['Team 2']
+        st.markdown(f"\n======= Match {round_of_16_matches_df.loc[index]['Match']} =======")
+        output_result = predict_func(round_of_16_matches_df.loc[index]['Team 1'], round_of_16_matches_df.loc[index]['Team 2'])
+        win_team = round_of_16_matches_df.loc[index]['Team 1'] if output_result[0]==3 else round_of_16_matches_df.loc[index]['Team 2']
         dump_semi.append(win_team)
         if len(dump_semi)==2:
             quater_final_list.append(dump_semi)
