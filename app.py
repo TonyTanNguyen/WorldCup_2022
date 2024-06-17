@@ -5,7 +5,6 @@ import numpy as np
 
 import random
 import pickle
-import networkx as nx
 from functions import *
 from simulator import simulator
 from flags import flags
