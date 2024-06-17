@@ -88,9 +88,9 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</h2>",unsafe_allow_html=True)
 
-img_link = 'https://tgmresearch.com/images/Artboard_4.png'
+# img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 
-st.image(img_link)
+# st.image(img_link)
 
 
 tab1,tab2 = st.tabs(['Predict full competition','Predict 1vs1'])
