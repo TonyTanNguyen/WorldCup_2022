@@ -93,8 +93,9 @@ st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</
 # st.image(img_link)
 
 
-tab1,tab2 = st.tabs(['Predict full competition','Predict 1vs1'])
+tab1,tab2 = st.tabs(['Predict full competition (Standard)','Predict full competition (Using unknown factors)'])
 with tab1:
+    st.write('We only use historical data (FIFA rank of each team, FIFA points changed overtime, goals made,...) to predict the result of a match between two teams.')
     start_predict = st.button('Start Predicting',key='A')
     if start_predict:
         group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,False)
@@ -138,4 +139,44 @@ with tab1:
 
 
 with tab2:
-    st.button('Start Predicting',key='B')
+    st.write('In real world, especially in high level competition games, small things can change the result of a match. We use an "unknown" factor, stands for unpredicted condition that might effect the result of each match. Results for each run will be different.')
+    start_predict = st.button('Start Predicting',key='B')
+    if start_predict:
+        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,True)
+        
+        group_stage_con = tab2.container(border=True)
+        round_16_con = tab2.container(border=True)
+        quarter_con = tab2.container(border=True)
+        semi_con = tab2.container(border=True)
+        grand_con = tab2.container(border=True)
+        
+        #Title for each container
+        group_stage_con.header('GROUP STAGE')
+        group_stage_con.table(group_stage_table.style.format(precision=1, thousands=''))
+        group_stage_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Group Stage</h3>',unsafe_allow_html=True)
+        for group in group_result_dfs:
+            group_stage_con.write(f'Group {group}')
+            group_stage_con.table(group_result_dfs[group].style.format(precision=1, thousands=''))
+        
+        group_stage_con.write('Best of 3rd')
+        group_stage_con.table(best_4_3rd_df.style.format(precision=1, thousands=''))
+        round_16_con.header('ROUND OF 16')
+        round_16_con.table(round_of_16_table.style.format(precision=1, thousands=''))
+        round_16_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Round of 16</h3>',unsafe_allow_html=True)
+        round_16_con.table(round_of_16_result_table)
+        quarter_con.header('QUARTER FINAL')
+        quarter_con.table(quarter_final_table)
+        quarter_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Quarter Final</h3>',unsafe_allow_html=True)
+        quarter_con.table(quarter_final_result_table)
+        semi_con.header('SEMI FINAL')
+        semi_con.table(semi_final_table)
+        semi_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Semi Final</h3>',unsafe_allow_html=True)
+        semi_con.table(semi_final_result_table)
+        grand_con.header('GRAND FINAL')
+        grand_con.table(grand_final_table)
+        grand_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Grand Final</h3>',unsafe_allow_html=True)
+        grand_con.table(grand_final_result_table)
+        
+        st.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Champion</h3>',unsafe_allow_html=True)
+
+        st.header(f'{champion}')

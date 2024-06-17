@@ -5,7 +5,7 @@ from flags import flags
 def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf_home,model_rf_away,useFactor=False):
     #######GROUP STAGE#########
     group_stage = fillTeamInfo(group_stage,rank)
-    group_stage = predict_games(model_rf_home,model_rf_away,group_stage)
+    group_stage = predict_games(model_rf_home,model_rf_away,group_stage,useFactor=True)
     if not useFactor:
         group_stage = pd.read_excel('./data/result groupstage.xlsx')
     group_stage_table = group_stage[['Home','Away','Home_score','Away_score','Group']]
