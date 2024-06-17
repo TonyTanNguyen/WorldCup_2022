@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import pandas as pd
 import numpy as np
-
+import sklearn
 import random
 import pickle
 from functions import *
