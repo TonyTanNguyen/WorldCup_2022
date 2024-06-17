@@ -86,7 +86,7 @@ hide_streamlit_style = """
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
-st.markdown("<h2 style='text-align: center; color:#bd0042'>FIFA WORLD CUP 2022 PREDICTOR</h2>",unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</h2>",unsafe_allow_html=True)
 
 img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 
