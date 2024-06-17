@@ -2,10 +2,12 @@
 import pandas as pd
 from functions import *
 from flags import flags
-def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf_home,model_rf_away):
+def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf_home,model_rf_away,useFactor=False):
     #######GROUP STAGE#########
     group_stage = fillTeamInfo(group_stage,rank)
     group_stage = predict_games(model_rf_home,model_rf_away,group_stage)
+    if not useFactor:
+        group_stage = pd.read_excel('./data/result groupstage.xlsx')
     group_stage_table = group_stage[['Home','Away','Home_score','Away_score','Group']]
     group_stage_table.columns = ['Home','Away','Home Goal Prediction','Away Goal Prediction','Group']
     group_stage_table['Result'] = group_stage_table.apply(lambda x: 'Draw' if x['Home Goal Prediction']==x['Away Goal Prediction'] else(x['Home'] + ' win' if x['Home Goal Prediction']>x['Away Goal Prediction'] else x['Away'] + ' win'),axis=1) #return

@@ -97,7 +97,7 @@ tab1,tab2 = st.tabs(['Predict full competition','Predict 1vs1'])
 with tab1:
     start_predict = st.button('Start Predicting',key='A')
     if start_predict:
-        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor)
+        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,False)
         
         group_stage_con = tab1.container(border=True)
         round_16_con = tab1.container(border=True)
