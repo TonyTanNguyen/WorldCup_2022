@@ -17,11 +17,11 @@ def predict_games(model_home,model_away,stage,knock_out=False):
     if knock_out:
         home_score = model_home.predict(stage[predict_col])
         away_score = model_away.predict(stage[predict_col])
-        home_score = [random.uniform(0.0, 1.0) + i for i in home_score]
-        away_score = [random.uniform(0.0, 1.0) + i for i in away_score]
-    else:
-        home_score = [round(random.uniform(0.0, 1.0) + i,1) for i in home_score]
-        away_score = [round(random.uniform(0.0, 1.0) + i,1) for i in away_score]
+        # home_score = [random.uniform(0.0, 1.0) + i for i in home_score]
+        # away_score = [random.uniform(0.0, 1.0) + i for i in away_score]
+    # else:
+        # home_score = [round(random.uniform(0.0, 1.0) + i,1) for i in home_score]
+        # away_score = [round(random.uniform(0.0, 1.0) + i,1) for i in away_score]
         home_score = [round_number(i) for i in home_score]
         away_score = [round_number(i) for i in away_score]
 
