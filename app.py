@@ -9,7 +9,7 @@ from flags import flags
 st.set_page_config(
     page_title = "EURO 2024 Predictor",
     page_icon="🧊",
-    layout="centered")
+    layout="wide")
 # pd.options.st.table.float_format = "{:,.3f}".format
 home_predictor_path = 'home_predictor.sav'
 away_predictor_path = 'away_predictor.sav'
