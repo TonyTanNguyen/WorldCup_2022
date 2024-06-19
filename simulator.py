@@ -2,7 +2,7 @@
 import pandas as pd
 from functions import *
 from flags import flags
-def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf_home,model_rf_away,useFactor=False):
+def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf_home,model_rf_away,useFactor=False,simu=False):
     #######GROUP STAGE#########
     group_stage = fillTeamInfo(group_stage,rank)
     group_stage = predict_games(model_rf_home,model_rf_away,group_stage,useFactor=True)
@@ -155,4 +155,7 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
     grand_final_result_table['Home'] = grand_final_result_table['Home'].map(lambda x: flags[x] + x if x in flags else x)
     grand_final_result_table['Away'] = grand_final_result_table['Away'].map(lambda x: flags[x] + x if x in flags else x)
     champion = flags[champion] + ' ' + champion
-    return group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats
+    if not simu:
+        return group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats
+    else:
+        return stats

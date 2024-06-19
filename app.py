@@ -39,26 +39,20 @@ round_of_16 = euro_2024_matches[euro_2024_matches['Type']=='Round of 16']
 quarter_final = euro_2024_matches[euro_2024_matches['Type']=='Quarter Final']
 semi_final = euro_2024_matches[euro_2024_matches['Type']=='Semi Final']
 grand_final = euro_2024_matches[euro_2024_matches['Type']=='Grand Final']
-latest_rank = pd.read_excel('data/RANK latest.xlsx')
-rank = {}
-for index, row in latest_rank.iterrows():
-    rank[row['Country']] = {
-        'Total Points':row['Total Points'],
-        'Point Change':row['+-'],
-        'Rank':int(row['Rank']),
-        }
+all_team = list(set(group_stage['Home'].to_list() + group_stage['Away'].to_list()))
 
-#Use for simulation
-all_team = set(group_stage['Home'].to_list() + group_stage['Away'].to_list())
+    
 stats = {i:{'Round of 16': 0,
             'Quarter Final':0,
             'Semi Final': 0,
             'Grand Final': 0,
             'Champion':0,
-         } for i in all_team}
+        } for i in all_team}
 
 
 
+def show_flag(selected_country):
+        return flags[selected_country] + selected_country
 
 
 
@@ -93,11 +87,11 @@ st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</
 # st.image(img_link)
 
 
-tab1,tab2 = st.tabs(['Predict full competition (Standard)','Predict full competition (Using unknown factors)'])
+tab1,tab2,tab3 = st.tabs(['Predict full competition (Standard)','Predict full competition (Using unknown factors)','Predict 1vs1'])
 with tab1:
     st.write('We only use historical data (FIFA rank of each team, FIFA points changed overtime, goals made,...) to predict the result of a match between two teams.')
-    start_predict = st.button('Start Predicting',key='A')
-    if start_predict:
+    start_predict_1 = st.button('Start Predicting',key='A')
+    if start_predict_1:
         group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,False)
         
         group_stage_con = tab1.container(border=True)
@@ -136,47 +130,34 @@ with tab1:
         st.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Champion</h3>',unsafe_allow_html=True)
 
         st.header(f'{champion}')
+        st.balloons()
 
 
-with tab2:
-    st.write('In real world, especially in high level competition games, small things can change the result of a match. We use an "unknown" factor, stands for unpredicted condition that might effect the result of each match. Results for each run will be different.')
-    start_predict = st.button('Start Predicting',key='B')
-    if start_predict:
-        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,True)
-        
-        group_stage_con = tab2.container(border=True)
-        round_16_con = tab2.container(border=True)
-        quarter_con = tab2.container(border=True)
-        semi_con = tab2.container(border=True)
-        grand_con = tab2.container(border=True)
-        
-        #Title for each container
-        group_stage_con.header('GROUP STAGE')
-        group_stage_con.table(group_stage_table.style.format(precision=1, thousands=''))
-        group_stage_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Group Stage</h3>',unsafe_allow_html=True)
-        for group in group_result_dfs:
-            group_stage_con.write(f'Group {group}')
-            group_stage_con.table(group_result_dfs[group].style.format(precision=1, thousands=''))
-        
-        group_stage_con.write('Best of 3rd')
-        group_stage_con.table(best_4_3rd_df.style.format(precision=1, thousands=''))
-        round_16_con.header('ROUND OF 16')
-        round_16_con.table(round_of_16_table.style.format(precision=1, thousands=''))
-        round_16_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Round of 16</h3>',unsafe_allow_html=True)
-        round_16_con.table(round_of_16_result_table)
-        quarter_con.header('QUARTER FINAL')
-        quarter_con.table(quarter_final_table)
-        quarter_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Quarter Final</h3>',unsafe_allow_html=True)
-        quarter_con.table(quarter_final_result_table)
-        semi_con.header('SEMI FINAL')
-        semi_con.table(semi_final_table)
-        semi_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Semi Final</h3>',unsafe_allow_html=True)
-        semi_con.table(semi_final_result_table)
-        grand_con.header('GRAND FINAL')
-        grand_con.table(grand_final_table)
-        grand_con.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Result Grand Final</h3>',unsafe_allow_html=True)
-        grand_con.table(grand_final_result_table)
-        
-        st.write('<h3 style="color: white; background-color: #1750ad; padding: 10px; text-align: center;">Champion</h3>',unsafe_allow_html=True)
+# with tab2:
+#     st.write('In real world, especially in high level competition games, small things can change the result of a match. We use an "unknown" factor, stands for unpredicted condition that might effect the result of each match, and run the simulation n times to get probability for each team to be qualified from round of 16 to become champion.')
+#     start_predict_2 = st.button('Start simulating',key='B')
+#     if start_predict_2:
+#         for i in range(100):
+#             stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,useFactor=True,simu=True)
+#         tab2.write(pd.DataFrame(stats).T)
+with tab3:
+    #Use for simulation
 
-        st.header(f'{champion}')
+    tab3.write('Start predicting by selecting competition of two teams.')
+    
+    st.session_state.projects = all_team
+    def submit_delete_project():
+        if st.session_state['selected1'] == st.session_state['selected2']:
+            st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
+    team1 = tab3.selectbox('Select Team 1',st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
+    team2 = tab3.selectbox('Select Team 2',st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
+    bt_2_team = tab3.button('Predict',key = 'dsfsdddddd')
+    if bt_2_team:
+        dump_df = pd.DataFrame({'Home':[team1],
+                   'Away':[team2],})
+        dump_df = predict_games(home_predictor,away_predictor,dump_df,knock_out=True,useFactor=False)
+        team_win = dump_df['Home'].values[0] if dump_df['Result'].values[0]==1 else dump_df['Away'].values[0]
+        goals_proba = str(dump_df['Home_score'].values[0]) +' vs ' + str(dump_df['Away_score'].values[0])
+        con = tab3.container(border=True)
+        con.write(f"<b style='color:red'> {flags[team1]}{team1}</b> :soccer: <b style='color:red'>{flags[team2]}{team2}</b>: <b style='color:blue'>{flags[team_win]}{team_win}</b> wins with goals probability: <b>{goals_proba}</b>",unsafe_allow_html=True)
+        st.balloons()
