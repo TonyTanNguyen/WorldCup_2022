@@ -2,6 +2,9 @@
 import random
 import numpy as np
 import pandas as pd
+import altair as alt
+import streamlit as st
+
 latest_rank = pd.read_excel('data/RANK latest.xlsx')
 rank = {}
 for index, row in latest_rank.iterrows():
@@ -24,7 +27,7 @@ def predict_games(model_home,model_away,stage,knock_out=False,useFactor=False):
     stage2 = stage.rename(columns={'Home':'Away','Away':'Home'})
     stage1 = fillTeamInfo(stage1,rank)
     stage2 = fillTeamInfo(stage2,rank)
-    predict_col = ["total_points_home","total_points_away","rank_difference",'point_change_home','point_change_away']
+    predict_col = ["total_points_home","total_points_away","rank_difference"]
     home_score_1 = model_home.predict(stage1[predict_col])
     away_score_1 = model_away.predict(stage1[predict_col])
     home_score_2 = model_home.predict(stage2[predict_col])
@@ -34,16 +37,17 @@ def predict_games(model_home,model_away,stage,knock_out=False,useFactor=False):
     if not knock_out:
         home_score = [round_number(i) for i in home_score]
         away_score = [round_number(i) for i in away_score]
-    if useFactor:
-        home_score = [random.uniform(-1.0, 1.0) + i for i in home_score]
-        away_score = [random.uniform(-1.0, 1.0) + i for i in away_score]
-
 
     stage['Home_score'] = home_score
     stage['Away_score'] = away_score
+    if useFactor:
+        sampleList = [1,2]
+        stage['Result'] = stage.apply(lambda x: random.choices(sampleList, weights=(x['Home_score'],x['Away_score']), k=1)[0],axis=1)
+        stage['Home_win_points'] = stage['Result'].map(lambda x: 3 if x==1 else(1 if x==0 else 0))
+        stage['Away_win_points'] = stage['Result'].map(lambda x: 3 if x==2 else(1 if x==0 else 0))
+        return stage
     
     stage['Result'] = stage.apply(lambda x: 0 if x['Home_score']==x['Away_score'] else(1 if x['Home_score']>x['Away_score'] else 2),axis=1)
-    
     stage['Home_win_points'] = stage['Result'].map(lambda x: 3 if x==1 else(1 if x==0 else 0))
     stage['Away_win_points'] = stage['Result'].map(lambda x: 3 if x==2 else(1 if x==0 else 0))
     return stage
@@ -57,3 +61,22 @@ def fillTeamInfo(stage,infor_dict):
     stage['point_change_home'] = stage['Home'].map(lambda x: float(infor_dict[x]['Point Change'])).astype(float)
     stage['point_change_away'] = stage['Away'].map(lambda x: float(infor_dict[x]['Point Change'])).astype(float)
     return stage
+
+
+
+def drawChart(df,x,y):
+    df=df.sort_values(by=x,ascending = False)
+    bars = alt.Chart(df).mark_bar().encode(
+        x= alt.X(f'{x}:Q',sort=None,stack='zero',axis=alt.Axis(labels=False)),
+        y= alt.Y(f"{y}:O",sort=None)
+    ).properties(height=600)
+
+    text = alt.Chart(df).mark_text(dx=15, dy=3, color='black').encode(
+            x=alt.X(f'{x}:Q', stack='zero',sort=None,axis=alt.Axis(labels=False)),
+            y=alt.Y(f'{y}:N',sort=None),
+            # detail='site:N',
+            text=alt.Text(f'{x}:Q', format='.2%')
+        )
+    chart = bars + text
+    chart = chart.configure_axis(grid=False)
+    return st.altair_chart(chart, theme = "streamlit", use_container_width=True)

@@ -6,13 +6,16 @@ import pickle
 from functions import *
 from simulator import simulator
 from flags import flags
+import altair as alt
+
 st.set_page_config(
     page_title = "EURO 2024 Predictor",
     page_icon="🧊",
     layout="wide")
+
 # pd.options.st.table.float_format = "{:,.3f}".format
-home_predictor_path = 'home_predictor.sav'
-away_predictor_path = 'away_predictor.sav'
+home_predictor_path = '../home_predictor_2.sav'
+away_predictor_path = '../away_predictor_2.sav'
 
 
 home_predictor = pickle.load(open(home_predictor_path, 'rb'))
@@ -40,7 +43,11 @@ quarter_final = euro_2024_matches[euro_2024_matches['Type']=='Quarter Final']
 semi_final = euro_2024_matches[euro_2024_matches['Type']=='Semi Final']
 grand_final = euro_2024_matches[euro_2024_matches['Type']=='Grand Final']
 all_team = list(set(group_stage['Home'].to_list() + group_stage['Away'].to_list()))
-
+latest_rank = pd.read_excel('data/RANK latest.xlsx')
+currentRank = {}
+for index, row in latest_rank.iterrows():
+    currentRank[row['Country']] = int(row['Rank'])
+        
     
 stats = {i:{'Round of 16': 0,
             'Quarter Final':0,
@@ -87,7 +94,7 @@ st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</
 # st.image(img_link)
 
 
-tab1,tab2,tab3 = st.tabs(['Predict full competition (Standard)','Predict full competition (Using unknown factors)','Predict 1vs1'])
+tab1,tab2,tab3 = st.tabs(['Predict full competition (Standard)','Run simulation (Using unknown factors)','Predict 1vs1'])
 with tab1:
     st.write('We only use historical data (FIFA rank of each team, FIFA points changed overtime, goals made,...) to predict the result of a match between two teams.')
     start_predict_1 = st.button('Start Predicting',key='A')
@@ -133,13 +140,48 @@ with tab1:
         st.balloons()
 
 
-# with tab2:
-#     st.write('In real world, especially in high level competition games, small things can change the result of a match. We use an "unknown" factor, stands for unpredicted condition that might effect the result of each match, and run the simulation n times to get probability for each team to be qualified from round of 16 to become champion.')
-#     start_predict_2 = st.button('Start simulating',key='B')
-#     if start_predict_2:
-#         for i in range(100):
-#             stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,useFactor=True,simu=True)
-#         tab2.write(pd.DataFrame(stats).T)
+with tab2:
+    st.write('In real world, especially in high level competition games, small things can change the result of a match. We use an "unknown" factor, stands for unpredicted condition that might effect the result of each match, and run the simulation n times to get probability for each team to be qualified from round of 16 to become champion.')
+    simulating_time = tab2.selectbox('Select times to simulate',[100,1000,2000,5000])
+    start_predict_2 = tab2.button('Start simulating',key='B')
+    view_result = tab2.button('View pre-run result from our simulating 10,000 times')
+    if view_result:
+        output = pd.read_excel('10000 times simulate result.xlsx')
+        t16,t8,t4,t2,t1 = tab2.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
+        with t16:
+            drawChart(output,x='Round of 16',y='Team')
+        with t8:
+            drawChart(output,x='Quarter Final',y='Team')
+        with t4:
+            drawChart(output,x='Semi Final',y='Team')
+        with t2:
+            drawChart(output,x='Grand Final',y='Team')
+        with t1:
+            drawChart(output,x='Champion',y='Team')
+    if start_predict_2:
+        my_bar = tab2.progress(0)
+        n = simulating_time
+        for time in range(n):
+            my_bar.progress(time/n + 1/n)
+            stats= simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,useFactor=True,simu=True)
+        output = pd.DataFrame(stats).T
+        
+        
+        for col in output:
+            output[col] = output[col]/output[col].sum()
+        output = output.reset_index()
+        output = output.rename(columns={'index':'Team'})
+        t16,t8,t4,t2,t1 = tab2.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
+        with t16:
+            drawChart(output,x='Round of 16',y='Team')
+        with t8:
+            drawChart(output,x='Quarter Final',y='Team')
+        with t4:
+            drawChart(output,x='Semi Final',y='Team')
+        with t2:
+            drawChart(output,x='Grand Final',y='Team')
+        with t1:
+            drawChart(output,x='Champion',y='Team')
 with tab3:
     #Use for simulation
 
@@ -159,5 +201,5 @@ with tab3:
         team_win = dump_df['Home'].values[0] if dump_df['Result'].values[0]==1 else dump_df['Away'].values[0]
         goals_proba = str(dump_df['Home_score'].values[0]) +' vs ' + str(dump_df['Away_score'].values[0])
         con = tab3.container(border=True)
-        con.write(f"<b style='color:red'> {flags[team1]}{team1}</b> :soccer: <b style='color:red'>{flags[team2]}{team2}</b>: <b style='color:blue'>{flags[team_win]}{team_win}</b> wins with goals probability: <b>{goals_proba}</b>",unsafe_allow_html=True)
+        con.write(f"<b style='color:red'> {flags[team1]}{team1} (Rank {currentRank[team1]})</b> :soccer: <b style='color:red'>{flags[team2]}{team2} (Rank {currentRank[team2]})</b>: <b style='color:blue'>{flags[team_win]}{team_win}</b> wins with goals probability: <b>{goals_proba}</b>",unsafe_allow_html=True)
         st.balloons()
