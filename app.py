@@ -167,6 +167,7 @@ with tab2:
         
         
         for col in output.columns:
+            
             output[col] = output[col]/n
         output = output.reset_index()
         output = output.rename(columns={'index':'Team'})
