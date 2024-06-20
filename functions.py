@@ -27,7 +27,7 @@ def predict_games(model_home,model_away,stage,knock_out=False,useFactor=False):
     stage2 = stage.rename(columns={'Home':'Away','Away':'Home'})
     stage1 = fillTeamInfo(stage1,rank)
     stage2 = fillTeamInfo(stage2,rank)
-    predict_col = ["total_points_home","total_points_away","rank_difference"]
+    predict_col = ["total_points_home","total_points_away","rank_difference",'point_change_home','point_change_away']
     home_score_1 = model_home.predict(stage1[predict_col])
     away_score_1 = model_away.predict(stage1[predict_col])
     home_score_2 = model_home.predict(stage2[predict_col])
