@@ -181,6 +181,7 @@ with tab2:
         with t2:
             drawChart(output,x='Grand Final',y='Team')
         with t1:
+            
             drawChart(output,x='Champion',y='Team')
 with tab3:
     #Use for simulation
