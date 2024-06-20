@@ -14,8 +14,8 @@ st.set_page_config(
     layout="wide")
 
 # pd.options.st.table.float_format = "{:,.3f}".format
-home_predictor_path = '../home_predictor_2.sav'
-away_predictor_path = '../away_predictor_2.sav'
+home_predictor_path = './home_predictor_2.sav'
+away_predictor_path = './away_predictor_2.sav'
 
 
 home_predictor = pickle.load(open(home_predictor_path, 'rb'))
@@ -181,7 +181,7 @@ with tab2:
         with t2:
             drawChart(output,x='Grand Final',y='Team')
         with t1:
-            
+
             drawChart(output,x='Champion',y='Team')
 with tab3:
     #Use for simulation
