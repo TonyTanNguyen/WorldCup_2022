@@ -146,7 +146,6 @@ with tab2:
     start_predict_2 = tab2.button('Start simulating',key='B')
     view_result = tab2.button('View pre-run result from our simulating 10,000 times')
     if view_result:
-        output = pd.read_excel('10000 times simulate result.xlsx')
         t16,t8,t4,t2,t1 = tab2.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
         with t16:
             drawChart(output,x='Round of 16',y='Team')
@@ -167,8 +166,8 @@ with tab2:
         output = pd.DataFrame(stats).T
         
         
-        for col in output:
-            output[col] = output[col]/output[col].sum()
+        for col in output.columns:
+            output[col] = output[col]/n
         output = output.reset_index()
         output = output.rename(columns={'index':'Team'})
         t16,t8,t4,t2,t1 = tab2.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
