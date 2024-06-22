@@ -217,7 +217,7 @@ with tab3:
         n = simulating_time
         for time in range(n):
             my_bar.progress(time/n + 1/n)
-            stats= simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor,simu=True)
+            stats= simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor_select1,predictor_select2,simu=True)
         output = pd.DataFrame(stats).T
         
         
