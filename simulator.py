@@ -1,15 +1,17 @@
 import pandas as pd
 from functions import *
 from flags import flags
-def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf_home,model_rf_away,useFactor=False,simu=False):
+
+def get_result(x):
+    return 'Draw' if x['Result']==0 else(x['Home'] + ' win' if x['Result']==1 else x['Away'] + ' win')
+
+def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf,simu=False):
     #######GROUP STAGE#########
     group_stage = fillTeamInfo(group_stage,rank)
-    group_stage = predict_games(model_rf_home,model_rf_away,group_stage,useFactor=useFactor)
-    if not useFactor:
-        group_stage = pd.read_excel('./data/result groupstage.xlsx')
-    group_stage_table = group_stage[['Home','Away','Home_score','Away_score','Group']]
-    group_stage_table.columns = ['Home','Away','Home Goal Prediction','Away Goal Prediction','Group']
-    group_stage_table['Result'] = group_stage_table.apply(lambda x: 'Draw' if x['Home Goal Prediction']==x['Away Goal Prediction'] else(x['Home'] + ' win' if x['Home Goal Prediction']>x['Away Goal Prediction'] else x['Away'] + ' win'),axis=1) #return
+    group_stage = predict_games(model_rf,group_stage,simu=simu)
+    
+    group_stage_table = group_stage[['Home','Away','Result','Group']]
+    group_stage_table['Result'] = group_stage_table.apply(lambda x: get_result(x),axis=1) #return
     groups = group_stage['Group'].sort_values().unique()
     group_stage_result = {}
     template_dict = {
@@ -29,14 +31,14 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
                 
             #Calculate for Home team
             group_stage_result[group][row['Home']]['Points']+=row['Home_win_points']
-            group_stage_result[group][row['Home']]['GF']+=row['Home_score']
-            group_stage_result[group][row['Home']]['GA']+=row['Away_score']
-            group_stage_result[group][row['Home']]['GD']+=row['Home_score']-row['Away_score']
+            group_stage_result[group][row['Home']]['GF']+=row['Result_proba'][1]
+            group_stage_result[group][row['Home']]['GA']+=row['Result_proba'][2]
+            group_stage_result[group][row['Home']]['GD']+=row['Result_proba'][1]-row['Result_proba'][2]
             #Calculate for Away team
             group_stage_result[group][row['Away']]['Points']+=row['Away_win_points']
-            group_stage_result[group][row['Away']]['GF']+=row['Away_score']
-            group_stage_result[group][row['Away']]['GA']+=row['Home_score']
-            group_stage_result[group][row['Away']]['GD']+=row['Away_score']-row['Home_score']
+            group_stage_result[group][row['Away']]['GF']+=row['Result_proba'][2]
+            group_stage_result[group][row['Away']]['GA']+=row['Result_proba'][1]
+            group_stage_result[group][row['Away']]['GD']+=row['Result_proba'][2]-row['Result_proba'][1]
     
     
     best_4_3rd = {}
@@ -73,10 +75,10 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
     round_of_16['Home'] = round_of_16.apply(lambda x: top1_2[x['Home_code']],axis=1)
     round_of_16['Away'] = round_of_16.apply(lambda x: top1_2[x['Away_code']],axis=1)
     round_of_16 = fillTeamInfo(round_of_16,rank)
-    round_of_16_result = predict_games(model_rf_home,model_rf_away,round_of_16,knock_out=True,useFactor=useFactor)
+    round_of_16_result = predict_games(model_rf,round_of_16,simu=simu)
     round_of_16_table = round_of_16[['Home','Away','Match No.','Type']]
-    round_of_16_result_table = round_of_16_result[['Home','Away','Match No.','Type','Home_score','Away_score']] #return
-    round_of_16_result_table['Result'] = round_of_16_result_table.apply(lambda x: 'Draw' if x['Home_score']==x['Away_score'] else(x['Home'] + ' win' if x['Home_score']>x['Away_score'] else x['Away'] + ' win'),axis=1) #return
+    round_of_16_result_table = round_of_16_result[['Home','Away','Match No.','Type','Result']] #return
+    round_of_16_result_table['Result'] = round_of_16_result_table.apply(lambda x: get_result(x),axis=1) #return
     ##Get stats for group of 16##
     for i in top1_2:
         if i[0]!='3':
@@ -90,11 +92,11 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
     quarter_final['Home'] = quarter_final['Home_code'].map(lambda x: win_round_of_16[x])
     quarter_final['Away'] = quarter_final['Away_code'].map(lambda x: win_round_of_16[x])
     quarter_final = fillTeamInfo(quarter_final,rank)
-    quarter_final_result = predict_games(model_rf_home,model_rf_away,quarter_final,knock_out=True,useFactor=useFactor)
+    quarter_final_result = predict_games(model_rf,quarter_final,knock_out=True,simu=simu)
 
     quarter_final_table = quarter_final[['Home','Away','Match No.','Type']]#return
-    quarter_final_result_table = quarter_final_result[['Home','Away','Match No.','Type','Home_score','Away_score']] #return
-    quarter_final_result_table['Result'] = quarter_final_result_table.apply(lambda x: 'Draw' if x['Home_score']==x['Away_score'] else(x['Home'] + ' win' if x['Home_score']>x['Away_score'] else x['Away'] + ' win'),axis=1) #return
+    quarter_final_result_table = quarter_final_result[['Home','Away','Match No.','Type','Result']] #return
+    quarter_final_result_table['Result'] = quarter_final_result_table.apply(lambda x: get_result(x),axis=1) #return
     #Get stats
     for i in win_round_of_16:
         stats[win_round_of_16[i]]['Quarter Final']+=1
@@ -106,11 +108,11 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
     semi_final['Home'] = semi_final['Home_code'].map(lambda x: win_quarter_final[x])
     semi_final['Away'] = semi_final['Away_code'].map(lambda x: win_quarter_final[x])
     semi_final = fillTeamInfo(semi_final,rank)
-    semi_final_result = predict_games(model_rf_home,model_rf_away,semi_final,knock_out=True,useFactor=useFactor)
+    semi_final_result = predict_games(model_rf,semi_final,knock_out=True,simu=simu)
 
     semi_final_table = semi_final[['Home','Away','Match No.','Type']] #return
-    semi_final_result_table = semi_final_result[['Home','Away','Match No.','Type','Home_score','Away_score']] #return
-    semi_final_result_table['Result'] = semi_final_result_table.apply(lambda x: 'Draw' if x['Home_score']==x['Away_score'] else(x['Home'] + ' win' if x['Home_score']>x['Away_score'] else x['Away'] + ' win'),axis=1) #return
+    semi_final_result_table = semi_final_result[['Home','Away','Match No.','Type','Result']] #return
+    semi_final_result_table['Result'] = semi_final_result_table.apply(lambda x: get_result(x),axis=1) #return
     #get stats
     for i in win_quarter_final:
         stats[win_quarter_final[i]]['Semi Final']+=1
@@ -122,11 +124,11 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
     grand_final['Home'] = grand_final['Home_code'].map(lambda x: win_semi_final[x])
     grand_final['Away'] = grand_final['Away_code'].map(lambda x: win_semi_final[x])
     grand_final = fillTeamInfo(grand_final,rank)
-    grand_final_result = predict_games(model_rf_home,model_rf_away,grand_final,knock_out=True,useFactor=useFactor)
+    grand_final_result = predict_games(model_rf,grand_final,knock_out=True,simu=simu)
 
     grand_final_table = grand_final[['Home','Away','Match No.','Type']]
-    grand_final_result_table = grand_final_result[['Home','Away','Match No.','Type','Home_score','Away_score']] #return
-    grand_final_result_table['Result'] = grand_final_result_table.apply(lambda x: 'Draw' if x['Home_score']==x['Away_score'] else(x['Home'] + ' win' if x['Home_score']>x['Away_score'] else x['Away'] + ' win'),axis=1) #return
+    grand_final_result_table = grand_final_result[['Home','Away','Match No.','Type','Result']] #return
+    grand_final_result_table['Result'] = grand_final_result_table.apply(lambda x: get_result(x),axis=1) #return
     #get stats
     for i in win_semi_final:
         stats[win_semi_final[i]]['Grand Final']+=1

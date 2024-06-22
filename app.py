@@ -14,13 +14,11 @@ st.set_page_config(
     layout="wide")
 
 # pd.options.st.table.float_format = "{:,.3f}".format
-home_predictor_path = 'home_predictor.sav'
-away_predictor_path = 'away_predictor.sav'
+predictor_path1 = 'rf_predictor.sav'
+predictor_path2 = 'rf_predictor_2.sav'
 
-
-home_predictor = pickle.load(open(home_predictor_path, 'rb'))
-away_predictor = pickle.load(open(away_predictor_path, 'rb'))
-
+predictor1 = pickle.load(open(predictor_path1, 'rb'))
+predictor2 = pickle.load(open(predictor_path2, 'rb'))
 title = 'Test'
 text_teamplate = """<title>{title}</title><style>
         .title {
@@ -92,20 +90,55 @@ st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</
 # img_link = 'https://tgmresearch.com/images/Artboard_4.png'
 
 # st.image(img_link)
+models = ['Random Forest','Random Forest with Gradient Boosting']
+model_selection = st.radio('Select the algorithm to start predicting',models,index=0)
+if model_selection == models[0]:
+    predictor = predictor1
+else:
+    predictor = predictor2
 
 
-tab1,tab2,tab3 = st.tabs(['Predict full competition (Standard)','Run simulation (Using unknown factors)','Predict 1vs1'])
+tab1,tab2,tab3 = st.tabs(['Predict 1vs1','Predict full competition (Standard)','Run simulation (Using unknown factors)'])
+
 with tab1:
+    #Use for simulation
+    
+    tab1.write('Start predicting by selecting competition of two teams.')
+    
+    st.session_state.projects = all_team
+    def submit_delete_project():
+        if st.session_state['selected1'] == st.session_state['selected2']:
+            st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
+    team1 = tab1.selectbox('Select Team 1',st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
+    team2 = tab1.selectbox('Select Team 2',st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
+    bt_2_team = tab1.button('Predict',key = 'dsfsdddddd')
+    if bt_2_team:
+        dump_df = pd.DataFrame({'Home':[team1],
+                   'Away':[team2],})
+        dump_df = fillTeamInfo(dump_df,rank)
+        dump_df = predict_games(predictor,dump_df,knock_out=True,simu=False)
+        home_win_proba = str(int(round(dump_df['Result_proba'].values[0][1],2)*100)) + '%'
+        away_win_proba = str(int(round(dump_df['Result_proba'].values[0][2],2)*100)) + '%'
+        draw = str(int(round(dump_df['Result_proba'].values[0][0],2)*100)) + '%'
+        
+        con = tab1.container(border=True)
+        con.write(f"<b style='color:red'> {flags[team1]}{team1} (Rank {currentRank[team1]})</b> :soccer: <b style='color:red'>{flags[team2]}{team2} (Rank {currentRank[team2]})</b>: <b style='color:blue'>",unsafe_allow_html=True)
+        con.write(f"<b style='color:red'> {flags[team1]}{team1}</b> Win probability: {home_win_proba} ",unsafe_allow_html=True)
+        con.write(f"<b style='color:red'> {flags[team2]}{team2}</b> Win probability: {away_win_proba} ",unsafe_allow_html=True)
+        con.write(f"<b style='color:red'> Draw probability:</b> {draw}",unsafe_allow_html=True)
+        st.balloons()
+
+with tab2:
     st.write('We only use historical data (FIFA rank of each team, FIFA points changed overtime, goals made,...) to predict the result of a match between two teams.')
     start_predict_1 = st.button('Start Predicting',key='A')
     if start_predict_1:
-        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,False)
+        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor,False)
         
-        group_stage_con = tab1.container(border=True)
-        round_16_con = tab1.container(border=True)
-        quarter_con = tab1.container(border=True)
-        semi_con = tab1.container(border=True)
-        grand_con = tab1.container(border=True)
+        group_stage_con = tab2.container(border=True)
+        round_16_con = tab2.container(border=True)
+        quarter_con = tab2.container(border=True)
+        semi_con = tab2.container(border=True)
+        grand_con = tab2.container(border=True)
         
         #Title for each container
         group_stage_con.header('GROUP STAGE')
@@ -140,14 +173,17 @@ with tab1:
         st.balloons()
 
 
-with tab2:
+with tab3:
     st.write('In real world, especially in high level competition games, small things can change the result of a match. We use an "unknown" factor, stands for unpredicted condition that might effect the result of each match, and run the simulation n times to get probability for each team to be qualified from round of 16 to become champion.')
-    simulating_time = tab2.selectbox('Select times to simulate',[100,1000,2000,5000])
-    start_predict_2 = tab2.button('Start simulating',key='B')
-    view_result = tab2.button('View pre-run result from our simulating 10,000 times')
+    simulating_time = tab3.selectbox('Select times to simulate',[100,1000,2000,5000,10000])
+    start_predict_2 = tab3.button('Start simulating',key='B')
+    view_result = tab3.button('View pre-run result from our simulating 10,000 times')
     if view_result:
-        output = pd.read_excel('10000 times simulate result.xlsx')
-        t16,t8,t4,t2,t1 = tab2.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
+        if model_selection == models[0]:
+            output = pd.read_excel('predict 10000 random forest.xlsx')
+        else:
+            output = pd.read_excel('predict 10000 boost.xlsx')
+        t16,t8,t4,t2,t1 = tab3.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
         with t16:
             drawChart(output,x='Round of 16',y='Team')
         with t8:
@@ -159,20 +195,20 @@ with tab2:
         with t1:
             drawChart(output,x='Champion',y='Team')
     if start_predict_2:
-        my_bar = tab2.progress(0)
+        my_bar = tab3.progress(0)
         n = simulating_time
         for time in range(n):
             my_bar.progress(time/n + 1/n)
-            stats= simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,home_predictor,away_predictor,useFactor=True,simu=True)
+            stats= simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor,simu=True)
         output = pd.DataFrame(stats).T
         
         
         for col in output.columns:
-
             output[col] = output[col]/n
         output = output.reset_index()
         output = output.rename(columns={'index':'Team'})
-        t16,t8,t4,t2,t1 = tab2.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
+        output.to_excel('predict 10000.xlsx')
+        t16,t8,t4,t2,t1 = tab3.tabs(['Round of 16','Quarter Final','Semi Final','Grand Final','Champion'])
         with t16:
             drawChart(output,x='Round of 16',y='Team')
         with t8:
@@ -184,24 +220,7 @@ with tab2:
         with t1:
 
             drawChart(output,x='Champion',y='Team')
-with tab3:
-    #Use for simulation
 
-    tab3.write('Start predicting by selecting competition of two teams.')
-    
-    st.session_state.projects = all_team
-    def submit_delete_project():
-        if st.session_state['selected1'] == st.session_state['selected2']:
-            st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
-    team1 = tab3.selectbox('Select Team 1',st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
-    team2 = tab3.selectbox('Select Team 2',st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
-    bt_2_team = tab3.button('Predict',key = 'dsfsdddddd')
-    if bt_2_team:
-        dump_df = pd.DataFrame({'Home':[team1],
-                   'Away':[team2],})
-        dump_df = predict_games(home_predictor,away_predictor,dump_df,knock_out=True,useFactor=False)
-        team_win = dump_df['Home'].values[0] if dump_df['Result'].values[0]==1 else dump_df['Away'].values[0]
-        goals_proba = str(dump_df['Home_score'].values[0]) +' vs ' + str(dump_df['Away_score'].values[0])
-        con = tab3.container(border=True)
-        con.write(f"<b style='color:red'> {flags[team1]}{team1} (Rank {currentRank[team1]})</b> :soccer: <b style='color:red'>{flags[team2]}{team2} (Rank {currentRank[team2]})</b>: <b style='color:blue'>{flags[team_win]}{team_win}</b> wins with goals probability: <b>{goals_proba}</b>",unsafe_allow_html=True)
-        st.balloons()
+# with tab0:
+#     real_result = pd.read_excel('FIFA groupstage Real result.xlsx')
+

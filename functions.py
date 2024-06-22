@@ -4,15 +4,32 @@ import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
-
+import json
 latest_rank = pd.read_excel('data/RANK latest.xlsx')
 rank = {}
+cols = ["total_points_home","total_points_away","rank_difference","home_team_last_5_wins","away_team_last_5_wins","home_team_last_10_wins","away_team_last_10_wins"]
 for index, row in latest_rank.iterrows():
     rank[row['Country']] = {
         'Total Points':row['Total Points'],
         'Point Change':row['+-'],
         'Rank':int(row['Rank']),
         }
+last5_home = 'last5_home.json'
+last5_away = 'last5_away.json'
+last10_home = 'last10_home.json'
+last10_away = 'last10_away.json'
+
+with open(last5_home, 'r') as file:
+    last_5_home_wins = json.load(file)
+with open(last5_away, 'r') as file:
+    last_5_away_wins = json.load(file)
+with open(last10_home, 'r') as file:
+    last_10_home_wins = json.load(file)
+with open(last10_away, 'r') as file:
+    last_10_away_wins = json.load(file)
+
+def count_wins(results):
+    return sum(1 for result in results if result == 1)
 def round_number(n):
     n = np.round(n,1)
     if float(str(n)[-1]) >=8:
@@ -22,32 +39,18 @@ def round_number(n):
     else:
         return float(str(n)[:-2])
     
-def predict_games(model_home,model_away,stage,knock_out=False,useFactor=False):
-    stage1 = stage.copy()
-    stage2 = stage.rename(columns={'Home':'Away','Away':'Home'})
-    stage1 = fillTeamInfo(stage1,rank)
-    stage2 = fillTeamInfo(stage2,rank)
-    predict_col = ["total_points_home","total_points_away","rank_difference",'point_change_home','point_change_away']
-    home_score_1 = model_home.predict(stage1[predict_col])
-    away_score_1 = model_away.predict(stage1[predict_col])
-    home_score_2 = model_home.predict(stage2[predict_col])
-    away_score_2 = model_away.predict(stage2[predict_col])
-    home_score = (home_score_1 + away_score_2) / 2
-    away_score = (away_score_1 + home_score_2) / 2
-    if not knock_out:
-        home_score = [round_number(i) for i in home_score]
-        away_score = [round_number(i) for i in away_score]
-
-    stage['Home_score'] = home_score
-    stage['Away_score'] = away_score
-    if useFactor:
-        sampleList = [1,2]
-        stage['Result'] = stage.apply(lambda x: random.choices(sampleList, weights=(x['Home_score'],x['Away_score']), k=1)[0],axis=1)
-        stage['Home_win_points'] = stage['Result'].map(lambda x: 3 if x==1 else(1 if x==0 else 0))
-        stage['Away_win_points'] = stage['Result'].map(lambda x: 3 if x==2 else(1 if x==0 else 0))
-        return stage
-    
-    stage['Result'] = stage.apply(lambda x: 0 if x['Home_score']==x['Away_score'] else(1 if x['Home_score']>x['Away_score'] else 2),axis=1)
+def predict_games(model,stage,knock_out=False,simu=False):
+    predict_col = cols
+    stage['Result_proba'] = [i for i in model.predict_proba(stage[predict_col])]
+    sampleList = [0,1,2]
+    stage['Result'] = model.predict(stage[predict_col])
+    if simu:
+        stage['Result'] = stage.apply(lambda x: random.choices(sampleList, weights=x['Result_proba'], k=1)[0],axis=1)
+    if knock_out:
+        if simu:
+            stage['Result'] = stage.apply(lambda x: random.choices(sampleList[1:], weights=x['Result_proba'][1:], k=1)[0],axis=1)
+        else:
+            stage['Result'] = stage['Result_proba'].map(lambda x: 1 if x[1]>x[2] else 2)
     stage['Home_win_points'] = stage['Result'].map(lambda x: 3 if x==1 else(1 if x==0 else 0))
     stage['Away_win_points'] = stage['Result'].map(lambda x: 3 if x==2 else(1 if x==0 else 0))
     return stage
@@ -60,6 +63,10 @@ def fillTeamInfo(stage,infor_dict):
     stage['rank_difference'] = stage['home rank'] - stage['away rank']
     stage['point_change_home'] = stage['Home'].map(lambda x: float(infor_dict[x]['Point Change'])).astype(float)
     stage['point_change_away'] = stage['Away'].map(lambda x: float(infor_dict[x]['Point Change'])).astype(float)
+    stage['home_team_last_5_wins'] = stage['Home'].map(lambda x: count_wins(last_5_home_wins[x]))
+    stage['away_team_last_5_wins'] = stage['Away'].map(lambda x: count_wins(last_5_away_wins[x]))
+    stage['home_team_last_10_wins'] = stage['Home'].map(lambda x: count_wins(last_10_home_wins[x]))
+    stage['away_team_last_10_wins'] = stage['Away'].map(lambda x: count_wins(last_10_away_wins[x]))
     return stage
 
 
