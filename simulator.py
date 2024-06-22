@@ -28,7 +28,6 @@ real_result['Result'] = real_result.apply(lambda x: result_bin(x),axis=1)
 real_result['Actual result'] = real_result.apply(lambda x: get_result(x),axis=1)
 def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor_select1,predictor_select2,simu=False):
     #######GROUP STAGE#########
-    group_stage = fillTeamInfo(group_stage,rank)
     group_stage = predict_games(predictor_select1,predictor_select2,group_stage,simu=simu)
     group_stage['Actual Result'] = real_result['Actual result']
     group_stage_table = group_stage[['Home','Away','Result','Actual Result','Group']]
@@ -95,7 +94,6 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
     #then fill the rest
     round_of_16['Home'] = round_of_16.apply(lambda x: top1_2[x['Home_code']],axis=1)
     round_of_16['Away'] = round_of_16.apply(lambda x: top1_2[x['Away_code']],axis=1)
-    round_of_16 = fillTeamInfo(round_of_16,rank)
     round_of_16_result = predict_games(predictor_select1,predictor_select2,round_of_16,simu=simu)
     round_of_16_table = round_of_16[['Home','Away','Match No.','Type']]
     round_of_16_result_table = round_of_16_result[['Home','Away','Match No.','Type','Result']] #return
@@ -112,8 +110,7 @@ def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,g
         
     quarter_final['Home'] = quarter_final['Home_code'].map(lambda x: win_round_of_16[x])
     quarter_final['Away'] = quarter_final['Away_code'].map(lambda x: win_round_of_16[x])
-    quarter_final = fillTeamInfo(quarter_final,rank)
-    quarter_final_result = predict_games(model_rf,quarter_final,knock_out=True,simu=simu)
+    quarter_final_result = predict_games(predictor_select1,predictor_select2,quarter_final,knock_out=True,simu=simu)
 
     quarter_final_table = quarter_final[['Home','Away','Match No.','Type']]#return
     quarter_final_result_table = quarter_final_result[['Home','Away','Match No.','Type','Result']] #return

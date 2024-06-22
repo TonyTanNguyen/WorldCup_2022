@@ -113,20 +113,29 @@ with tab1:
     tab1.write('Start predicting by selecting competition of two teams.')
     
     st.session_state.projects = all_team
+    def switch_team():
+        st.session_state['dump'] = st.session_state['selected1'] 
+        st.session_state['selected1'] = st.session_state['selected2']
+        st.session_state['selected2'] = st.session_state['dump']
     def submit_delete_project():
         if st.session_state['selected1'] == st.session_state['selected2']:
             st.session_state['selected1'] = st.session_state.projects[random.choice(range(len(st.session_state.projects)))]
     team1 = tab1.selectbox('Select Team 1',st.session_state.projects,key='selected1',on_change = submit_delete_project,index=1, format_func = show_flag)
     team2 = tab1.selectbox('Select Team 2',st.session_state.projects,key='selected2',on_change = submit_delete_project,index=2, format_func = show_flag)
+    switch = tab1.button('Switch teams',on_click=switch_team)
+
     bt_2_team = tab1.button('Predict',key = 'dsfsdddddd')
     if bt_2_team:
-        dump_df = pd.DataFrame({'Home':[team1],
+        dump_df1 = pd.DataFrame({'Home':[team1],
                    'Away':[team2],})
-        dump_df = fillTeamInfo(dump_df,rank)
-        dump_df = predict_games(predictor_select1,predictor_select2,dump_df,knock_out=True,simu=False)
-        home_win_proba = str(int(round(dump_df['Result_proba'].values[0][1],2)*100)) + '%'
-        away_win_proba = str(int(round(dump_df['Result_proba'].values[0][2],2)*100)) + '%'
-        draw = str(int(round(dump_df['Result_proba'].values[0][0],2)*100)) + '%'
+        dump_df2 = pd.DataFrame({'Home':[team2],
+            'Away':[team1],})
+        dump_df1 = predict_games(predictor_select1,predictor_select2,dump_df1,knock_out=False,simu=False)
+        dump_df2 = predict_games(predictor_select1,predictor_select2,dump_df2,knock_out=False,simu=False)
+
+        home_win_proba = str(int(round((dump_df1['Result_proba'].values[0][1]+dump_df2['Result_proba'].values[0][2])/2,2)*100)) + '%'
+        away_win_proba = str(int(round((dump_df1['Result_proba'].values[0][2]+dump_df2['Result_proba'].values[0][1])/2,2)*100)) + '%'
+        draw = str(int(round((dump_df1['Result_proba'].values[0][0]+dump_df2['Result_proba'].values[0][0])/2,2)*100)) + '%'
         
         con = tab1.container(border=True)
         con.write(f"<b style='color:red'> {flags[team1]}{team1} (Rank {currentRank[team1]})</b> :soccer: <b style='color:red'>{flags[team2]}{team2} (Rank {currentRank[team2]})</b>: <b style='color:blue'>",unsafe_allow_html=True)
