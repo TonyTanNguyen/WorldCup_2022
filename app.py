@@ -14,11 +14,16 @@ st.set_page_config(
     layout="wide")
 
 # pd.options.st.table.float_format = "{:,.3f}".format
-predictor_path1 = 'rf_predictor.sav'
-predictor_path2 = 'rf_predictor_2.sav'
+predictor1_path1 = 'rf_predictor_1.sav'
+predictor1_path2 = 'rf_predictor_2.sav'
+predictor2_path1 = 'gb_predictor_1.sav'
+predictor2_path2 = 'gb_predictor_2.sav'
 
-predictor1 = pickle.load(open(predictor_path1, 'rb'))
-predictor2 = pickle.load(open(predictor_path2, 'rb'))
+predictorA1 = pickle.load(open(predictor1_path1, 'rb'))
+predictorA2 = pickle.load(open(predictor1_path2, 'rb'))
+predictorB1 = pickle.load(open(predictor2_path1, 'rb'))
+predictorB2 = pickle.load(open(predictor2_path2, 'rb'))
+
 title = 'Test'
 text_teamplate = """<title>{title}</title><style>
         .title {
@@ -93,9 +98,11 @@ st.markdown("<h2 style='text-align: center; color:#bd0042'>EURO 2024 PREDICTOR</
 models = ['Random Forest','Random Forest with Gradient Boosting']
 model_selection = st.radio('Select the algorithm to start predicting',models,index=0)
 if model_selection == models[0]:
-    predictor = predictor1
+    predictor_select1 = predictorA1
+    predictor_select2 = predictorA2
 else:
-    predictor = predictor2
+    predictor_select1 = predictorB1
+    predictor_select2 = predictorB2
 
 
 tab1,tab2,tab3 = st.tabs(['Predict 1vs1','Predict full competition (Standard)','Run simulation (Using unknown factors)'])
@@ -116,7 +123,7 @@ with tab1:
         dump_df = pd.DataFrame({'Home':[team1],
                    'Away':[team2],})
         dump_df = fillTeamInfo(dump_df,rank)
-        dump_df = predict_games(predictor,dump_df,knock_out=True,simu=False)
+        dump_df = predict_games(predictor_select1,predictor_select2,dump_df,knock_out=True,simu=False)
         home_win_proba = str(int(round(dump_df['Result_proba'].values[0][1],2)*100)) + '%'
         away_win_proba = str(int(round(dump_df['Result_proba'].values[0][2],2)*100)) + '%'
         draw = str(int(round(dump_df['Result_proba'].values[0][0],2)*100)) + '%'
@@ -131,8 +138,10 @@ with tab1:
 with tab2:
     st.write('We only use historical data (FIFA rank of each team, FIFA points changed overtime, goals made,...) to predict the result of a match between two teams.')
     start_predict_1 = st.button('Start Predicting',key='A')
+   
     if start_predict_1:
-        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor,False)
+
+        group_stage_table,group_result_dfs,best_4_3rd_df,round_of_16_table,round_of_16_result_table,quarter_final_table,quarter_final_result_table,semi_final_table,semi_final_result_table,grand_final_table,grand_final_result_table,champion,stats = simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,predictor_select1,predictor_select2,False)
         
         group_stage_con = tab2.container(border=True)
         round_16_con = tab2.container(border=True)
