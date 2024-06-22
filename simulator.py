@@ -3,14 +3,35 @@ from functions import *
 from flags import flags
 
 def get_result(x):
-    return 'Draw' if x['Result']==0 else(x['Home'] + ' win' if x['Result']==1 else x['Away'] + ' win')
-
+    if x['Result']==0:
+        return 'Draw'
+    elif x['Result']==1:
+        return x['Home'] + ' win'
+    elif x['Result']==2:
+        return x['Away'] + ' win'
+    else:
+        return 'TBD'
+    
+def result_bin(x):
+    if x['Home_score_actual']=='':
+        return 'TBD'
+    elif x['Home_score_actual']==x['Away_score_actual']:
+        return 0
+    elif x['Home_score_actual']>x['Away_score_actual']:
+        return 1
+    else:
+        return 2
+    
+real_result = pd.read_excel('FIFA groupstage Real result.xlsx')
+real_result = real_result.fillna('')
+real_result['Result'] = real_result.apply(lambda x: result_bin(x),axis=1)
+real_result['Actual result'] = real_result.apply(lambda x: get_result(x),axis=1)
 def simulator(group_stage,best_3rds_table,round_of_16,quarter_final,semi_final,grand_final,rank,all_team,stats,model_rf,simu=False):
     #######GROUP STAGE#########
     group_stage = fillTeamInfo(group_stage,rank)
     group_stage = predict_games(model_rf,group_stage,simu=simu)
-    
-    group_stage_table = group_stage[['Home','Away','Result','Group']]
+    group_stage['Actual Result'] = real_result['Actual result']
+    group_stage_table = group_stage[['Home','Away','Result','Actual Result','Group']]
     group_stage_table['Result'] = group_stage_table.apply(lambda x: get_result(x),axis=1) #return
     groups = group_stage['Group'].sort_values().unique()
     group_stage_result = {}
