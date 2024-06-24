@@ -51,7 +51,6 @@ def predict_games(model1,model2,stage_input,knock_out=False,simu=False):
     stage['Result_proba'] = stage.apply(lambda x: [(d + y)/2 for d, y in zip(x['Result_proba1'], x['Result_proba2'])],axis=1)
     sampleList = [0,1,2]
     stage['Result'] = stage['Result_proba'].map(lambda x: proba_to_class(x))
-    stage.to_excel('a.xlsx')
     
     if simu:
         stage['Result'] = stage.apply(lambda x: random.choices(sampleList, weights=x['Result_proba'], k=1)[0],axis=1)
