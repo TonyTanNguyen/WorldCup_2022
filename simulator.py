@@ -22,7 +22,7 @@ def result_bin(x):
     else:
         return 2
     
-real_result = pd.read_excel('FIFA groupstage Real results.xlsx')
+real_result = pd.read_excel('FIFA groupstage Real result.xlsx')
 real_result = real_result.fillna('')
 real_result['Result'] = real_result.apply(lambda x: result_bin(x),axis=1)
 real_result['Actual result'] = real_result.apply(lambda x: get_result(x),axis=1)
